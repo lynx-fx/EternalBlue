@@ -1,44 +1,40 @@
 const Recommendation = require("../model/Recommendation");
 
-exports.createRecommendation = async (req, res) => {
+exports.getAllRecommendations = async (req, res) => {
   try {
-    const { title, description, category, location } = req.body;
-    if (!title || !description || !category || !location) {
-      return res.status(400).json({ success: false, message: "Please fill all fields" });
-    }
-
-    const rec = await Recommendation.create({
-      title,
-      description,
-      category,
-      location,
-      createdBy: req.user.id
-    });
-
-    res.status(201).json({ success: true, data: rec });
+    const recommendations = await Recommendation.find().sort({ createdAt: -1 });
+    res.json({ success: true, data: recommendations });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Failed to create recommendation" });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-exports.getRecommendations = async (req, res) => {
+exports.createRecommendation = async (req, res) => {
   try {
-    const recs = await Recommendation.find().populate("createdBy", "name email");
-    res.status(200).json({ success: true, count: recs.length, data: recs });
+    const recommendation = new Recommendation(req.body);
+    await recommendation.save();
+    res.status(201).json({ success: true, data: recommendation });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Failed to retrieve recommendations" });
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+exports.updateRecommendation = async (req, res) => {
+  try {
+    const recommendation = await Recommendation.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!recommendation) return res.status(404).json({ success: false, message: "Recommendation not found" });
+    res.json({ success: true, data: recommendation });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
   }
 };
 
 exports.deleteRecommendation = async (req, res) => {
   try {
-    const rec = await Recommendation.findById(req.params.id);
-    if (!rec) {
-      return res.status(404).json({ success: false, message: "Recommendation not found" });
-    }
-    await rec.deleteOne();
-    res.status(200).json({ success: true, message: "Recommendation removed" });
+    const recommendation = await Recommendation.findByIdAndDelete(req.params.id);
+    if (!recommendation) return res.status(404).json({ success: false, message: "Recommendation not found" });
+    res.json({ success: true, message: "Recommendation deleted" });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Failed to delete recommendation" });
+    res.status(500).json({ success: false, message: err.message });
   }
 };

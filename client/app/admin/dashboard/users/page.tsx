@@ -1,12 +1,15 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { fetchApi } from '@/lib/api';
-import { Users, Ban, CheckCircle, Trash2 } from 'lucide-react';
+import { Users, Ban, CheckCircle, Trash2, Mail, Key, Plus, ShieldCheck, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
 
   const loadData = async () => {
     try {
@@ -26,6 +29,27 @@ export default function AdminUsersPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  const handleAddAdmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (!newAdmin.name || !newAdmin.email || !newAdmin.password) {
+        return toast.error('Please fill all required fields');
+      }
+      const resAdd = await fetchApi('/admin/users/admin', { method: 'POST', body: JSON.stringify(newAdmin) });
+      
+      if (!resAdd.$ok) {
+        return toast.error(resAdd.data?.message || resAdd.message || 'Failed to create administrator');
+      }
+
+      toast.success('Admin authorization created successfully');
+      setNewAdmin({ name: '', email: '', password: '' });
+      setIsModalOpen(false);
+      loadData();
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to create administrator');
+    }
+  };
 
   const toggleBan = async (id: string) => {
     try {
@@ -59,11 +83,101 @@ export default function AdminUsersPage() {
   if (loading) return <div className="animate-pulse flex items-center justify-center p-20 font-medium text-slate-400">Loading user matrix...</div>;
 
   return (
-    <div className="space-y-12 animate-fade-in">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-bold text-slate-950 uppercase tracking-tighter">User Control</h1>
-        <p className="text-slate-500 font-medium">Manage and restrict access for registered platform users.</p>
+    <div className="space-y-12 animate-fade-in pb-20">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold text-slate-950 uppercase tracking-tighter">User Control</h1>
+          <p className="text-slate-500 font-medium">Manage and restrict access for registered platform users.</p>
+        </div>
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold uppercase tracking-widest text-xs flex items-center gap-3 transition-all shadow-xl shadow-emerald-600/20 active:scale-95"
+        >
+          <Plus size={16} /> Elevate Personnel
+        </button>
       </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-2xl bg-white rounded-[3rem] p-10 shadow-2xl overflow-hidden"
+            >
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-8 right-8 text-slate-400 hover:text-slate-600 transition-colors"
+                type="button"
+              >
+                <X size={24} />
+              </button>
+
+              <div className="space-y-8">
+                <div className="space-y-1">
+                  <h3 className="text-3xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-3">
+                    <ShieldCheck size={32} className="text-emerald-500"/> Elevate Personnel
+                  </h3>
+                  <p className="text-slate-500 font-medium">Issue master authorization credentials to new administrators.</p>
+                </div>
+                
+                <form onSubmit={handleAddAdmin} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2">Full Name</label>
+                      <div className="relative">
+                        <Users size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input type="text" placeholder="Your Name" className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all" value={newAdmin.name} onChange={(e) => setNewAdmin({...newAdmin, name: e.target.value})} required/>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2">Encrypted Email</label>
+                      <div className="relative">
+                        <Mail size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input type="email" placeholder="Your Email" className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all" value={newAdmin.email} onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})} required/>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-slate-600 uppercase tracking-widest ml-2">Initial Access Passphrase</label>
+                    <div className="relative">
+                      <Key size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input type="password" placeholder="••••••••" minLength={6} className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all" value={newAdmin.password} onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})} required/>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex gap-4">
+                    <button 
+                      type="button"
+                      onClick={() => setIsModalOpen(false)}
+                      className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold uppercase tracking-widest transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="flex-[2] py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-all shadow-xl shadow-emerald-600/20"
+                    >
+                      Deploy Administrator
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <div className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
         <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">

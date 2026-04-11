@@ -1,214 +1,341 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { fetchApi } from '@/lib/api';
-import { ShieldAlert, MapPin, Trash2, Plus, AlertOctagon, Info, Globe, Map } from 'lucide-react';
-import { toast } from 'sonner';
 
-export default function AdminRecommendationsPage() {
-  const [recommendations, setRecommendations] = useState<any[]>([]);
+import React, { useEffect, useState } from 'react';
+import { 
+  Compass, 
+  MapPin, 
+  Star, 
+  Plus, 
+  Trash2, 
+  Edit3,
+  X,
+  Hotel, 
+  Trees, 
+  Image as ImageIcon,
+  DollarSign,
+  AlertCircle,
+  CheckCircle2
+} from 'lucide-react';
+import { fetchApi } from '@/lib/api';
+import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
+
+export default function AdminRecommendations() {
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newRec, setNewRec] = useState({ title: '', description: '', location: '', category: 'Place' });
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [newRec, setNewRec] = useState({
+    title: '',
+    description: '',
+    type: 'trip',
+    location: '',
+    price: '',
+    rating: 5,
+    imageUrl: '',
+    isFeatured: false
+  });
 
   const loadData = async () => {
-    try {
-      const res = await fetchApi('/recommendations');
-      if (res.$ok) {
-        setRecommendations(res.data.data || []);
-      } else {
-        toast.error(res.data?.message || res.message || 'Failed to fetch recommendations');
-      }
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to authenticate or fetch data.');
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    const res = await fetchApi('/recommendations');
+    if (res.$ok) {
+      setRecommendations(res.data.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const handleAddRec = async (e: React.FormEvent) => {
+  const resetForm = () => {
+    setShowAddForm(false);
+    setEditingId(null);
+    setNewRec({
+      title: '',
+      description: '',
+      type: 'trip',
+      location: '',
+      price: '',
+      rating: 5,
+      imageUrl: '',
+      isFeatured: false
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      if (!newRec.title || !newRec.description || !newRec.location) {
-        return toast.error('Please fill all required fields');
-      }
-      
-      const res = await fetchApi('/recommendations', { method: 'POST', body: JSON.stringify(newRec) });
-      if (res.$ok) {
-        toast.success('Recommendation deployed globally');
-        setNewRec({ title: '', description: '', location: '', category: 'Place' });
-        loadData();
-      } else {
-        toast.error(res.data?.message || res.message || 'Failed to deploy recommendation');
-      }
-    } catch (e: any) {
-      toast.error(e.message || 'Failed to deploy recommendation');
+    const endpoint = editingId ? `/recommendations/${editingId}` : '/recommendations';
+    const method = editingId ? 'PUT' : 'POST';
+
+    const res = await fetchApi(endpoint, {
+      method,
+      body: JSON.stringify(newRec)
+    });
+
+    if (res.$ok) {
+      toast.success(editingId ? 'Record updated successfully' : 'Recommendation deployed to network');
+      resetForm();
+      loadData();
+    } else {
+      toast.error(res.data?.message || 'Failed to process request');
     }
   };
 
-  const handleDeleteRec = async (id: string) => {
-    if (!window.confirm('Erase this recommendation from the system?')) return;
-    try {
-      const res = await fetchApi(`/recommendations/${id}`, { method: 'DELETE' });
-      if (res.$ok) {
-        toast.success('Recommendation erased');
-        loadData();
-      } else {
-        toast.error(res.data?.message || res.message || 'Failed to erase recommendation');
-      }
-    } catch (e: any) {
-      toast.error(e.message || 'Failed to erase recommendation');
-    }
+  const handleEdit = (rec: any) => {
+    setEditingId(rec._id);
+    setNewRec({
+      title: rec.title,
+      description: rec.description,
+      type: rec.type,
+      location: rec.location,
+      price: rec.price || '',
+      rating: rec.rating || 5,
+      imageUrl: rec.imageUrl || '',
+      isFeatured: rec.isFeatured || false
+    });
+    setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (loading) return <div className="animate-pulse flex items-center justify-center p-20 font-medium text-slate-400 text-xs tracking-[0.3em] uppercase">Synchronizing Data...</div>;
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to decommission this record?')) return;
+    const res = await fetchApi(`/recommendations/${id}`, { method: 'DELETE' });
+    if (res.$ok) {
+      toast.success('Record purged from database');
+      loadData();
+    }
+  };
 
   return (
-    <div className="space-y-12 animate-fade-in pb-20">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-bold text-slate-950 uppercase tracking-tighter">
-          Recommendations
-        </h1>
-        <p className="text-slate-500 font-medium font-display uppercase text-xs tracking-widest">Manage Hotels & Places</p>
+    <div className="space-y-10 pb-20">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Voyager Discovery</h1>
+          <p className="text-slate-500 font-medium">Curate premium Himalayan experiences and elite accommodations.</p>
+        </div>
+        <button 
+          onClick={showAddForm ? resetForm : () => setShowAddForm(true)}
+          className={`px-6 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs flex items-center gap-3 transition-all shadow-xl active:scale-95 ${showAddForm ? 'bg-slate-200 text-slate-600 hover:bg-slate-300' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'}`}
+        >
+          {showAddForm ? <X size={16} /> : <Plus size={16} />}
+          {showAddForm ? 'Cancel Operation' : 'Deploy New Selection'}
+        </button>
       </div>
 
-      <div className="grid lg:grid-cols-[450px_1fr] gap-10 items-start">
-        {/* Left Col: Deployment Form */}
-        <section className="bg-white border border-slate-100 rounded-[3rem] p-10 shadow-sm sticky top-32">
-           <div className="flex items-center gap-4 mb-10">
-              <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm shadow-emerald-100/50">
-                 <Map size={24} />
-              </div>
-              <div>
-                 <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">Add Protocol</h3>
-                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Add new hotel or place</p>
-              </div>
-           </div>
-           
-           <form onSubmit={handleAddRec} className="space-y-8">
-              <div className="space-y-3">
-                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Location</label>
-                 <div className="relative">
-                    <Globe size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input 
-                      type="text" 
-                      placeholder="e.g. Kathmandu" 
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-6 text-sm font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-400 outline-none transition-all placeholder:text-slate-300 shadow-inner" 
-                      value={newRec.location} 
-                      onChange={(e) => setNewRec({...newRec, location: e.target.value})}
-                      required
+      <AnimatePresence>
+        {showAddForm && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-10 shadow-2xl shadow-emerald-900/5 mb-8">
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="space-y-6 lg:col-span-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Title / Name</label>
+                      <input 
+                        type="text" 
+                        required 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                        placeholder="e.g. Ama Dablam Base Camp Trek"
+                        value={newRec.title}
+                        onChange={e => setNewRec({...newRec, title: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Primary Location</label>
+                      <div className="relative">
+                        <MapPin size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-500" />
+                        <input 
+                          type="text" 
+                          required 
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-14 pr-6 py-4 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                          placeholder="e.g. Solu-Khumbu Region"
+                          value={newRec.location}
+                          onChange={e => setNewRec({...newRec, location: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Description / Intel</label>
+                    <textarea 
+                      required 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-3xl px-6 py-4 text-sm font-medium text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all min-h-[140px] resize-none"
+                      placeholder="Detail the experience, highlights, and unique selling points..."
+                      value={newRec.description}
+                      onChange={e => setNewRec({...newRec, description: e.target.value})}
                     />
-                 </div>
-              </div>
-              
-              <div className="space-y-3">
-                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Title</label>
-                 <input 
-                   type="text" 
-                   placeholder="e.g. Everest View Hotel" 
-                   className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-400 outline-none transition-all placeholder:text-slate-300 shadow-inner" 
-                   value={newRec.title} 
-                   onChange={(e) => setNewRec({...newRec, title: e.target.value})} 
-                   required
-                 />
-              </div>
+                  </div>
+                </div>
 
-              <div className="space-y-3">
-                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Category</label>
-                 <div className="grid grid-cols-2 gap-3">
-                    {['Hotel', 'Place'].map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() => setNewRec({...newRec, category: c})}
-                        className={`py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${newRec.category === c ? 'bg-slate-950 border-slate-950 text-white shadow-lg' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-300'}`}
-                      >
-                        {c}
-                      </button>
-                    ))}
-                 </div>
-              </div>
-
-              <div className="space-y-3">
-                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Description</label>
-                 <textarea 
-                   placeholder="Details about this place or hotel..." 
-                   rows={5} 
-                   className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-400 outline-none transition-all resize-none placeholder:text-slate-300 shadow-inner" 
-                   value={newRec.description} 
-                   onChange={(e) => setNewRec({...newRec, description: e.target.value})} 
-                   required
-                 />
-              </div>
-
-              <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-5 rounded-[2rem] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-200 group active:scale-[0.98]">
-                 <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" /> Apply Recommendation
-              </button>
-           </form>
-        </section>
-
-        {/* Right Col: Feed */}
-        <section className="space-y-6">
-           <div className="flex items-center justify-between px-6">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500">
-                    <Map size={16} />
-                 </div>
-                 <h3 className="text-sm font-black text-slate-900 uppercase tracking-[0.15em]">Live Recommendations</h3>
-              </div>
-              <span className="px-4 py-2 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest">{recommendations.length} Active</span>
-           </div>
-
-           <div className="grid gap-6">
-              {recommendations.map((rec) => (
-                <div key={rec._id} className="bg-white border border-slate-100 rounded-[2.5rem] p-8 hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden">
-                   <div className={`absolute top-0 right-0 w-32 h-32 opacity-[0.03] pointer-events-none transition-transform group-hover:scale-110 bg-emerald-600 rounded-bl-full`} />
-                   
-                   <div className="flex justify-between items-start mb-6">
-                      <div className="flex items-center gap-4">
-                         <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] ${rec.category === 'Hotel' ? 'bg-indigo-50 text-indigo-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                            {rec.category}
-                         </div>
-                         <div className="flex items-center gap-1.5 text-slate-400">
-                            <MapPin size={12} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">{rec.location}</span>
-                         </div>
-                      </div>
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Classification</label>
+                    <div className="grid grid-cols-2 gap-3">
                       <button 
-                        onClick={() => handleDeleteRec(rec._id)} 
-                        className="w-10 h-10 rounded-xl bg-slate-50 text-slate-300 hover:bg-red-50 hover:text-red-600 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100"
+                        type="button"
+                        onClick={() => setNewRec({...newRec, type: 'trip'})}
+                        className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'trip' ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
                       >
-                        <Trash2 size={18} />
+                        <Trees size={18} />
+                        <span className="text-[10px] font-black uppercase">Adventure Trip</span>
                       </button>
-                   </div>
+                      <button 
+                        type="button"
+                        onClick={() => setNewRec({...newRec, type: 'hotel'})}
+                        className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'hotel' ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
+                      >
+                        <Hotel size={18} />
+                        <span className="text-[10px] font-black uppercase">Elite Stay</span>
+                      </button>
+                    </div>
+                  </div>
 
-                   <h4 className="text-xl font-black text-slate-900 tracking-tight leading-tight mb-4 group-hover:text-emerald-700 transition-colors uppercase">{rec.title}</h4>
-                   <p className="text-sm text-slate-500 font-bold leading-relaxed mb-6 italic border-l-4 border-slate-100 pl-6">
-                      {rec.description}
-                   </p>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Price Estimate</label>
+                      <div className="relative">
+                        <DollarSign size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                        <input 
+                          type="text" 
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-black text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                          placeholder="$1,200"
+                          value={newRec.price}
+                          onChange={e => setNewRec({...newRec, price: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Voyager Rating</label>
+                      <div className="relative">
+                        <Star size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-500" />
+                        <input 
+                          type="number" 
+                          min="1" max="5"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-black text-slate-950 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                          value={newRec.rating}
+                          onChange={e => setNewRec({...newRec, rating: parseInt(e.target.value)})}
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-                   <div className="flex items-center gap-6 pt-6 border-t border-slate-50">
-                      <div className="flex items-center gap-2">
-                         <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-500">C</div>
-                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Protocol Verified</span>
-                      </div>
-                      <div className="flex items-center gap-2 ml-auto">
-                         <Info size={12} className="text-slate-300" />
-                         <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Logged: {new Date(rec.createdAt).toLocaleDateString()}</span>
-                      </div>
-                   </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Visual Asset URL</label>
+                    <div className="relative">
+                      <ImageIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                      <input 
+                        type="url" 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-medium text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                        placeholder="https://images.unsplash.com/..."
+                        value={newRec.imageUrl}
+                        onChange={e => setNewRec({...newRec, imageUrl: e.target.value})}
+                      />
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit"
+                    className="w-full py-5 bg-slate-950 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl shadow-slate-900/40 hover:scale-[1.02] active:scale-95 transition-all"
+                  >
+                    {editingId ? 'Update Authorization' : 'Authorize Selection'}
+                  </button>
                 </div>
-              ))}
-              {recommendations.length === 0 && (
-                <div className="bg-slate-50 border border-dashed border-slate-200 rounded-[2.5rem] py-20 flex flex-col items-center justify-center text-slate-400 gap-4">
-                   <Globe size={40} className="opacity-20 translate-y-2" />
-                   <p className="font-black uppercase tracking-[0.3em] text-[10px]">No Active Recommendations</p>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {loading ? (
+          [1,2,3].map(i => (
+            <div key={i} className="animate-pulse bg-slate-100 h-96 rounded-[3rem]" />
+          ))
+        ) : recommendations.length === 0 ? (
+          <div className="col-span-full py-20 text-center space-y-4 bg-white border border-dashed border-slate-200 rounded-[3rem]">
+            <Compass size={48} className="mx-auto text-slate-200" />
+            <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No discovery records found in the security matrix.</p>
+          </div>
+        ) : (
+          recommendations.map((rec: any, idx: number) => (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              key={rec._id}
+              className="group bg-white border border-slate-100 rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-500"
+            >
+              <div className="h-56 relative overflow-hidden">
+                <img 
+                  src={rec.imageUrl || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80'} 
+                  alt={rec.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute top-6 left-6 flex gap-2">
+                  <div className={`px-4 py-2 rounded-full backdrop-blur-md text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${rec.type === 'trip' ? 'bg-emerald-600/80 text-white' : 'bg-blue-600/80 text-white'}`}>
+                    {rec.type === 'trip' ? <Trees size={12} /> : <Hotel size={12} />}
+                    {rec.type}
+                  </div>
                 </div>
-              )}
-           </div>
-        </section>
+                <div className="absolute top-6 right-6 flex gap-2">
+                  <button 
+                    onClick={() => handleEdit(rec)}
+                    className="w-10 h-10 bg-white text-slate-900 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg hover:bg-emerald-50"
+                  >
+                    <Edit3 size={16} />
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(rec._id)}
+                    className="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <Star size={12} className="text-amber-500 fill-amber-500" />
+                      <span className="text-[10px] font-black text-slate-900">{rec.rating}.0</span>
+                    </div>
+                    {rec.price && (
+                      <span className="text-sm font-black text-emerald-600 tracking-tighter">{rec.price}</span>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-black text-slate-950 leading-tight uppercase tracking-tighter">{rec.title}</h3>
+                  <div className="flex items-center gap-1.5 text-slate-400">
+                    <MapPin size={12} />
+                    <span className="text-[10px] font-bold uppercase tracking-wide">{rec.location}</span>
+                  </div>
+                </div>
+
+                <p className="text-xs font-medium text-slate-500 leading-relaxed italic line-clamp-3">
+                  {rec.description}
+                </p>
+
+                <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={14} className="text-emerald-500" />
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Network Verified</span>
+                  </div>
+                  <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">
+                    {new Date(rec.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))
+        )}
       </div>
     </div>
   );
