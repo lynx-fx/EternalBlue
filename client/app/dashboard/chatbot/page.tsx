@@ -62,11 +62,13 @@ export default function DashboardChatbot() {
     setInput("");
     setIsTyping(true);
 
-    // Format history for Gemini API
-    const history = messages.map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
-    }));
+    // Format history for Gemini API (must start with a user message)
+    const history = messages
+      .filter((msg, index) => !(index === 0 && msg.sender === 'ai'))
+      .map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
 
     try {
       const data = await fetchApi('/ai/chat', {

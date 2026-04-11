@@ -29,7 +29,7 @@ export default function RootLayout({
       className={`${inter.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">
-        <Toaster position="top-center" richColors />
+        <Toaster/>
         {children}
       </body>
     </html>
