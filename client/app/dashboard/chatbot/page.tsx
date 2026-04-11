@@ -16,7 +16,9 @@ import {
   Loader2,
   ArrowRight,
   Shield,
-  MapPin
+  MapPin,
+  History,
+  Plus
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchApi } from "@/lib/api";
@@ -63,17 +65,53 @@ const AIResponse = ({ text, isNew }: { text: string; isNew?: boolean }) => {
 };
 
 export default function DashboardChatbot() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "Hello! I'm your VoyageAI Travel Assistant. How can I help you plan your next adventure today?",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  const fetchSessions = async () => {
+    try {
+      const response = await fetchApi('/ai/history');
+      if (response.$ok && response.data.sessions) {
+        setSessions(response.data.sessions);
+      }
+    } catch (err) {
+      console.error("Failed to load sessions:", err);
+    }
+  };
+
+  const loadSession = async (chatId: string) => {
+    try {
+      setIsTyping(true);
+      const response = await fetchApi(`/ai/history?chatId=${chatId}`);
+      if (response.$ok) {
+        const formattedMessages: Message[] = response.data.messages.map((m: any, idx: number) => ({
+          id: idx.toString(),
+          text: m.text,
+          sender: m.role === 'user' ? 'user' : 'ai',
+          timestamp: new Date(m.createdAt || Date.now())
+        }));
+        setMessages(formattedMessages);
+        setCurrentChatId(chatId);
+      }
+    } catch (err) {
+      toast.error("Failed to restore mission log");
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const startNewChat = () => {
+    setMessages([]);
+    setCurrentChatId(null);
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -81,38 +119,43 @@ export default function DashboardChatbot() {
     }
   }, [messages, isTyping]);
 
-  const handleSend = async () => {
-    if (!input.trim() || isTyping) return;
+  const handleSend = async (overrideMsg?: string) => {
+    const finalInput = overrideMsg || input;
+    if (!finalInput.trim() || isTyping) return;
 
     const userMsg: Message = {
       id: Date.now().toString(),
-      text: input,
+      text: finalInput,
       sender: "user",
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    const currentInput = input;
+    const currentInput = finalInput;
     setInput("");
     setIsTyping(true);
 
-    const history = messages
-      .filter((msg, index) => !(index === 0 && msg.sender === 'ai'))
-      .map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.text }]
-      }));
+    const history = messages.map(msg => ({
+      role: msg.sender === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.text }]
+    }));
 
     try {
       const response = await fetchApi('/ai/chat', {
         method: 'POST',
         body: JSON.stringify({ 
           prompt: currentInput,
-          history: history 
+          history: history,
+          chatId: currentChatId
         }),
       });
       
       if (!response.$ok) throw new Error(response.message || "AI failed to respond");
+
+      if (!currentChatId && response.data.chatId) {
+        setCurrentChatId(response.data.chatId);
+        fetchSessions(); // Refresh sidebar to show the new session
+      }
 
       const aiMsg: Message = {
         id: Date.now().toString(),
@@ -254,6 +297,59 @@ export default function DashboardChatbot() {
 
       <aside className="hidden xl:flex w-[380px] border-l border-emerald-100/50 flex-col bg-white overflow-y-auto custom-scrollbar">
         <div className="p-10 space-y-10">
+          {/* Mission Log / History */}
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white">
+                  <History size={20} strokeWidth={2.5} />
+                </div>
+                <h3 className="font-display font-bold text-slate-900 uppercase tracking-widest text-sm">Mission Log</h3>
+              </div>
+              <button 
+                onClick={startNewChat}
+                className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-100 transition-colors active:scale-95"
+                title="New Expedition"
+              >
+                <Plus size={16} strokeWidth={3} />
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              {sessions.length === 0 ? (
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">No active logs detected</p>
+              ) : (
+                sessions.slice(0, 5).map((session, i) => (
+                  <button 
+                    key={i} 
+                    onClick={() => loadSession(session._id)}
+                    className={`w-full p-4 border rounded-2xl text-left transition-all ${
+                      currentChatId === session._id 
+                        ? 'bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-200/50' 
+                        : 'bg-slate-50 border-slate-100 hover:border-emerald-200'
+                    }`}
+                  >
+                    <p className={`text-[10px] font-black truncate mb-1 uppercase tracking-tight ${
+                      currentChatId === session._id ? 'text-white' : 'text-slate-900'
+                    }`}>
+                      {session.title || "Untitled Expedition"}
+                    </p>
+                    <div className="flex items-center gap-2">
+                       <span className={`w-1.5 h-1.5 rounded-full ${
+                         currentChatId === session._id ? 'bg-white' : 'bg-emerald-500'
+                       }`} />
+                       <span className={`text-[9px] font-bold uppercase tracking-widest ${
+                         currentChatId === session._id ? 'text-emerald-100' : 'text-slate-400'
+                       }`}>
+                         {new Date(session.updatedAt).toLocaleDateString()}
+                       </span>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+
           <div>
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
@@ -263,17 +359,23 @@ export default function DashboardChatbot() {
             </div>
             
             <div className="grid gap-3">
-              <button className="flex items-center justify-between p-4 bg-white border border-emerald-100 rounded-2xl hover:shadow-md hover:border-emerald-200 transition-all text-left group">
+              <button 
+                onClick={() => handleSend("I'm looking for some hidden gems for my next trip. Can you suggest some destinations that are off the beaten path but still safe?")}
+                className="flex items-center justify-between p-4 bg-white border border-emerald-100 rounded-2xl hover:shadow-md hover:border-emerald-200 transition-all text-left group active:scale-95"
+              >
                 <div>
                   <p className="text-xs font-black text-slate-900 group-hover:text-emerald-700">Find Destinations</p>
                   <p className="text-[10px] font-bold text-slate-400">Discover hidden gems</p>
                 </div>
                 <ArrowRight size={14} className="text-slate-300 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="flex items-center justify-between p-4 bg-white border border-emerald-100 rounded-2xl hover:shadow-md hover:border-emerald-200 transition-all text-left group">
+              <button 
+                onClick={() => handleSend("I need advice on finding the best flight deals. What are some tactical tips for booking affordable international flights without compromising on safety?")}
+                className="flex items-center justify-between p-4 bg-white border border-emerald-100 rounded-2xl hover:shadow-md hover:border-emerald-200 transition-all text-left group active:scale-95"
+              >
                 <div>
-                  <p className="text-xs font-black text-slate-900 group-hover:text-emerald-700">Book Flights</p>
-                  <p className="text-[10px] font-bold text-slate-400">Best rates guaranteed</p>
+                  <p className="text-xs font-black text-slate-900 group-hover:text-emerald-700">Travel Protocol</p>
+                  <p className="text-[10px] font-bold text-slate-400">Best rates & safety tips</p>
                 </div>
                 <ArrowRight size={14} className="text-slate-300 group-hover:translate-x-1 transition-transform" />
               </button>

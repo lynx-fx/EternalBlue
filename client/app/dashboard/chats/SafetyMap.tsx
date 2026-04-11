@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from 'react-leaflet';
+import { Sparkles } from 'lucide-react';
 import L from 'leaflet';
 import "leaflet/dist/leaflet.css";
 
@@ -91,19 +92,19 @@ export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps)
           <Popup className="custom-popup">
             <div className="p-4 space-y-3 text-center min-w-[180px]">
               <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-2 animate-pulse">
-                <div className="w-4 h-4 bg-emerald-600 rounded-full" />
+                <Sparkles size={18} />
               </div>
               <div>
-                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Unlinked Signal</p>
+                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">Unlinked Signal</p>
                 <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">{beacon.name}</h4>
               </div>
-              <p className="text-[10px] font-medium text-slate-400">Initialize a new secure network cluster at these coordinates?</p>
+              <p className="text-[10px] font-medium text-slate-400 leading-tight">Initialize this cluster to establish a secure regional network node.</p>
               <button 
                 onClick={() => onCreateHub(beacon.name, beacon.coords as [number, number])}
-                className="w-full py-2.5 bg-emerald-600 text-white text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-slate-950 transition-all shadow-lg shadow-emerald-200"
+                className="w-full py-3 bg-emerald-600 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-slate-950 transition-all shadow-lg shadow-emerald-200"
                 type="button"
               >
-                Initialize Cluster
+                Activate & Join
               </button>
             </div>
           </Popup>
