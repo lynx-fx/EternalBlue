@@ -222,6 +222,11 @@ export default function ChatsPage() {
       return;
     }
 
+    if (hub.users.length >= 20) {
+      toast.error("Frequency saturated. This cluster instance is at 20/20 capacity. Please join another instance or initialize a new node.");
+      return;
+    }
+
     try {
       toast.loading(`Establishing link to ${hub.chatName}...`);
       const response = await fetchApi('/chat/groupadd', {
@@ -248,12 +253,28 @@ export default function ChatsPage() {
   };
 
   const createHub = async (name: string, coords: [number, number]) => {
+    // Find an existing hub at these coordinates that isn't full (limit 20)
+    const availableHub = hubs.find(h => 
+      h.coordinates && 
+      h.coordinates[0] === coords[0] && 
+      h.coordinates[1] === coords[1] &&
+      h.users.length < 20
+    );
+
+    if (availableHub) {
+      joinHub(availableHub);
+      return;
+    }
+
     try {
-      toast.loading(`Initializing cluster at ${name}...`);
+      const instanceCount = hubs.filter(h => h.coordinates && h.coordinates[0] === coords[0]).length + 1;
+      const hubName = instanceCount > 1 ? `${name} Hub #${instanceCount}` : `${name} Hub`;
+      
+      toast.loading(`Initializing ${hubName}...`);
       const response = await fetchApi('/chat/group', {
         method: 'POST',
         body: JSON.stringify({
-          name: `${name} Hub`,
+          name: hubName,
           users: JSON.stringify([user?._id]),
           coordinates: coords
         }),
@@ -261,16 +282,17 @@ export default function ChatsPage() {
       
       if (!response.$ok) {
         toast.dismiss();
-        toast.error(response.data.message || "Failed to initialize cluster.");
+        toast.error(response.data?.message || "Failed to initialize cluster.");
         return;
       }
 
       toast.dismiss();
       toast.success(`Cluster ${name} initialized.`);
       
-      setChats(prev => [response.data, ...prev]);
-      setSelectedChat(response.data);
-      fetchHubs();
+      const newHub = response.data;
+      setChats(prev => [newHub, ...prev]);
+      setHubs(prev => [newHub, ...prev]);
+      setSelectedChat(newHub);
     } catch (err) {
       toast.error("Cluster initialization failed.");
     }
@@ -310,9 +332,13 @@ export default function ChatsPage() {
         <div className="p-8 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-black text-slate-950 uppercase tracking-tighter">Global Net</h2>
-            <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50">
+            <button 
+              onClick={() => setSelectedChat(null)}
+              className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 hover:bg-emerald-600 hover:text-white transition-all active:scale-95"
+              title="Return to Map"
+            >
                <Globe size={18} />
-            </div>
+            </button>
           </div>
 
           <div className="relative group">
@@ -414,10 +440,30 @@ export default function ChatsPage() {
 
       {/* Main Chat Area / Map Integration */}
       <div className={`flex-1 flex flex-col relative ${!selectedChat ? 'hidden md:flex' : 'flex'}`}>
+        {!selectedChat && (
+          <div className="absolute top-8 left-8 z-20 pointer-events-none">
+             <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-100 shadow-xl flex items-center gap-3 pointer-events-auto">
+               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+               <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none">Global Hub Matrix Active</span>
+             </div>
+          </div>
+        )}
+
         {selectedChat ? (
           <>
+            {/* Floating Return to Map Button (Desktop) */}
+            <div className="absolute top-6 left-6 z-20 hidden md:block">
+              <button 
+                onClick={() => setSelectedChat(null)}
+                className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-xl shadow-emerald-900/10 border border-emerald-50 hover:bg-emerald-600 hover:text-white transition-all active:scale-95 group"
+                title="Return to Map"
+              >
+                <Globe size={20} className="group-hover:rotate-[360deg] transition-transform duration-1000" />
+              </button>
+            </div>
+
             {/* Chat Header */}
-            <div className="p-6 border-b border-slate-100 bg-white/50 backdrop-blur-md flex items-center justify-between z-10">
+            <div className="p-6 pl-20 border-b border-slate-100 bg-white/50 backdrop-blur-md flex items-center justify-between z-10">
               <div className="flex items-center gap-4">
                 <button 
                   onClick={() => setSelectedChat(null)}
