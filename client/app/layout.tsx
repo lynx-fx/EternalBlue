@@ -15,7 +15,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "VoyageAI | Premium Travel Advisory",
+  title: "Voyage | Premium Travel Advisory",
   description: "Redefining global exploration with AI-driven intelligence and personalized wanderlust.",
 };
 

@@ -31,7 +31,7 @@ export default function AuthLayout({
               <div className="w-11 h-11 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-xl shadow-emerald-900/10">
                 <Compass size={22} strokeWidth={2.5} />
               </div>
-              <span className="text-xl font-bold text-white tracking-tighter uppercase">VoyageAI</span>
+              <span className="text-xl font-bold text-white tracking-tighter uppercase">Voyage</span>
             </Link>
 
             <div className="space-y-10 mt-16 md:mt-0">

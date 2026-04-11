@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { fetchApi } from '@/lib/api';
-import { Users, Ban, CheckCircle, Trash2, Mail, Key, Plus, ShieldCheck, X } from 'lucide-react';
+import { Users, Ban, CheckCircle, Trash2, Mail, Key, Plus, ShieldCheck, X, AlertOctagon } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -9,15 +9,24 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reports, setReports] = useState<any[]>([]);
   const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
 
   const loadData = async () => {
     try {
-      const usersRes = await fetchApi('/admin/users');
+      const [usersRes, reportsRes] = await Promise.all([
+        fetchApi('/admin/users'),
+        fetchApi('/reports')
+      ]);
+
       if (usersRes.$ok) {
         setUsers(usersRes.data.users || []);
       } else {
         toast.error(usersRes.data?.message || usersRes.message || 'Failed to fetch user data');
+      }
+
+      if (reportsRes.$ok && reportsRes.data.data) {
+        setReports(reportsRes.data.data);
       }
     } catch (err: any) {
       toast.error(err.message || 'Failed to authenticate or fetch data.');
@@ -77,6 +86,23 @@ export default function AdminUsersPage() {
       }
     } catch (e: any) {
       toast.error(e.message || 'Failed to erase user entity');
+    }
+  };
+
+  const handleResolveReport = async (reportId: string) => {
+    try {
+      const res = await fetchApi(`/reports/${reportId}`, { 
+        method: 'PUT', 
+        body: JSON.stringify({ status: 'Resolved' }) 
+      });
+      if (res.$ok) {
+        toast.success('Report resolved');
+        loadData();
+      } else {
+        toast.error('Failed to resolve report');
+      }
+    } catch {
+      toast.error('Failed to resolve report');
     }
   };
 
@@ -248,6 +274,75 @@ export default function AdminUsersPage() {
               {users.length === 0 && (
                 <tr>
                    <td colSpan={5} className="py-10 text-center text-slate-400 text-sm font-medium">No personnel data located.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="bg-red-50/30 border border-red-100 rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgba(255,0,0,0.02)] mt-8">
+        <div className="px-8 py-6 border-b border-red-100 flex items-center justify-between bg-red-50/50">
+          <h2 className="text-lg font-bold text-red-900 uppercase tracking-tight flex items-center gap-3">
+            <AlertOctagon className="text-red-500" size={20} />
+            Flagged Personnel (Social Matrix)
+          </h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-red-100/50 bg-white/50">
+                <th className="px-8 py-5 text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Reporter</th>
+                <th className="px-8 py-5 text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Violator</th>
+                <th className="px-8 py-5 text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Evidence Log</th>
+                <th className="px-8 py-5 text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Status</th>
+                <th className="px-8 py-5 text-[10px] font-black text-red-400 uppercase tracking-[0.2em] text-right">Moderation</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-red-50 bg-white">
+              {reports.map((r) => (
+                <tr key={r._id} className="hover:bg-red-50/50 transition-colors">
+                  <td className="px-8 py-4">
+                    <p className="text-sm font-bold text-slate-900">{r.reporter?.name || 'Unknown'}</p>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">{r.reporter?.email}</p>
+                  </td>
+                  <td className="px-8 py-4">
+                    <p className="text-sm font-bold text-slate-900">{r.reportedUser?.name || 'Unknown'}</p>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">{r.reportedUser?.email}</p>
+                  </td>
+                  <td className="px-8 py-4 max-w-xs">
+                    <p className="text-[11px] text-slate-600 font-medium truncate" title={r.messageContent}>"{r.messageContent}"</p>
+                  </td>
+                  <td className="px-8 py-4">
+                    <span className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${r.status === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      {r.status}
+                    </span>
+                  </td>
+                  <td className="px-8 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                       {r.status === 'Pending' && (
+                         <button 
+                           onClick={() => handleResolveReport(r._id)}
+                           className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] transition-colors"
+                         >
+                           Resolve
+                         </button>
+                       )}
+                       {r.reportedUser && (
+                         <button 
+                           onClick={() => toggleBan(r.reportedUser._id)}
+                           className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] transition-colors"
+                         >
+                           Suspend User
+                         </button>
+                       )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {reports.length === 0 && (
+                <tr>
+                   <td colSpan={5} className="py-10 text-center text-slate-400 text-sm font-medium">No flagged users logged in the matrix.</td>
                 </tr>
               )}
             </tbody>

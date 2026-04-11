@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const RecommendationSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  type: { type: String, enum: ['trip', 'hotel'], required: true },
+  type: { type: String, enum: ['trip', 'hotel', 'tip'], required: true },
   location: { type: String, required: true },
   price: { type: String },
   rating: { type: Number, default: 5 },

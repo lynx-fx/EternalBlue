@@ -35,7 +35,7 @@ export default function SignupPage() {
       }
 
       localStorage.setItem('token', res.data.token);
-      toast.success(res.data.message || 'Access granted. Welcome to VoyageAI');
+      toast.success(res.data.message || 'Access granted. Welcome to Voyage');
       router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Google Authentication failed');
@@ -111,8 +111,8 @@ export default function SignupPage() {
               required
               value={formData.firstName}
               onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-              className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-3.5 px-5 text-slate-900 placeholder-slate-300 focus:outline-none focus:border-emerald-500 transition-all text-xs font-bold"
-              placeholder="John"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 transition-all text-xs font-bold"
+              placeholder="Your"
             />
           </div>
           <div className="space-y-2">
@@ -122,8 +122,8 @@ export default function SignupPage() {
               required
               value={formData.lastName}
               onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-              className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-3.5 px-5 text-slate-900 placeholder-slate-300 focus:outline-none focus:border-emerald-500 transition-all text-xs font-bold"
-              placeholder="Doe"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 transition-all text-xs font-bold"
+              placeholder="Name"
             />
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function SignupPage() {
             required
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-3.5 px-5 text-slate-900 placeholder-slate-300 focus:outline-none focus:border-emerald-500 transition-all text-xs font-bold"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 transition-all text-xs font-bold"
             placeholder="voyager@network.com"
           />
         </div>
@@ -148,7 +148,7 @@ export default function SignupPage() {
               required
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-3.5 px-5 text-slate-900 placeholder-slate-300 focus:outline-none focus:border-emerald-500 transition-all text-xs font-bold"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 transition-all text-xs font-bold"
               placeholder="••••••••"
             />
             <button 

@@ -104,7 +104,7 @@ export default function UserDashboard({ user }: { user: any }) {
              </div>
           </div>
 
-          <div className="bg-white border border-slate-100 rounded-[3rem] p-8 space-y-6 shadow-sm">
+          {/* <div className="bg-white border border-slate-100 rounded-[3rem] p-8 space-y-6 shadow-sm">
              <div className="flex items-center gap-3">
                 <Clock size={16} className="text-emerald-600" />
                 <h4 className="text-[11px] font-bold text-slate-900 uppercase tracking-[0.2em]">Next Planned Sync</h4>
@@ -116,7 +116,7 @@ export default function UserDashboard({ user }: { user: any }) {
              <div className="w-full h-2 bg-slate-50 rounded-full overflow-hidden">
                 <div className="w-[60%] h-full bg-emerald-600" />
              </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

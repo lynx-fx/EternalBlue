@@ -77,7 +77,7 @@ export default function DashboardLayout({
       `}>
         <div className="h-full flex flex-col py-10">
           <div className="pl-10 flex flex-col mb-12">
-            <span className="font-display font-black text-2xl tracking-widest text-white uppercase">VOYAGEAI</span>
+            <span className="font-display font-black text-2xl tracking-widest text-white uppercase">VOYAGE</span>
             <span className="font-bold text-[10px] tracking-[0.2em] text-emerald-100/70 uppercase mt-1">Command Center</span>
           </div>
 

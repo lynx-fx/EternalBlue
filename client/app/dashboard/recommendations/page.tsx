@@ -36,7 +36,8 @@ export default function DiscoveryPage() {
     <div className="space-y-12 pb-20">
       {/* Hero Section */}
       <div className="relative bg-slate-950 rounded-[3.5rem] p-10 md:p-16 overflow-hidden text-white shadow-2xl shadow-slate-900/40">
-        <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none">
+        <div className="absolute top-0 right-0 w-2/3 md:w-1/2 h-full opacity-30 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/50 to-transparent z-10" />
           <img 
             src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80" 
             className="w-full h-full object-cover"
