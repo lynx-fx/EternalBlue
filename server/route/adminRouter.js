@@ -12,6 +12,7 @@ router.get("/reports", protect, adminOrSeller, adminController.getAllReports);
 router.patch("/reports/:id", protect, adminOrSeller, adminController.resolveReport);
 
 router.patch("/users/:id/ban", protect, adminOnly, adminController.banUser);
+router.delete("/users/:id", protect, adminOnly, adminController.deleteUser);
 router.get("/users/:id/history", protect, adminOrSeller, adminController.getUserReportHistory);
 
 // Add new admin
