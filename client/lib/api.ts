@@ -27,13 +27,14 @@ export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
 
     // Return data even if not ok, but add status info
     return {
-      ...data,
+      data,
       $ok: response.ok,
       $status: response.status
     };
   } catch (error: any) {
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
       return {
+        data: null,
         success: false,
         message: 'Unable to connect to the server. Please check your connection.',
         $ok: false,
@@ -41,6 +42,7 @@ export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
       };
     }
     return {
+      data: null,
       success: false,
       message: error.message || 'An unexpected error occurred.',
       $ok: false,

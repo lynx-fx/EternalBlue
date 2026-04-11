@@ -72,10 +72,10 @@ exports.createGroupChat = async (req, res) => {
 
   var users = JSON.parse(req.body.users);
 
-  if (users.length < 2) {
+  if (users.length < 1) {
     return res
       .status(400)
-      .send("More than 2 users are required to form a group chat");
+      .send("At least one user is required to form a network cluster");
   }
 
   users.push(req.user.id);
@@ -86,6 +86,7 @@ exports.createGroupChat = async (req, res) => {
       users: users,
       isGroupChat: true,
       groupAdmin: req.user.id,
+      coordinates: req.body.coordinates,
     });
 
     const fullGroupChat = await Chat.findOne({ _id: groupChat._id })

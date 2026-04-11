@@ -22,15 +22,15 @@ export default function DashboardPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [userData, scamsData] = await Promise.all([
+        const [userRes, scamsRes] = await Promise.all([
           fetchApi('/auth/get-me'),
           fetchApi('/scams')
         ]);
         
-        if (userData.success) setUser(userData.user);
-        if (scamsData.success) {
+        if (userRes.$ok) setUser(userRes.data.user);
+        if (scamsRes.$ok) {
           // Priority to high severity and limit to 3
-          const sortedScams = scamsData.scams
+          const sortedScams = (scamsRes.data.scams || [])
             .sort((a: any, b: any) => (b.severity === 'High' ? 1 : -1))
             .slice(0, 3);
           setScams(sortedScams);

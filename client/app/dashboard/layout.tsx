@@ -32,8 +32,12 @@ export default function DashboardLayout({
   useEffect(() => {
     const getUser = async () => {
       try {
-        const data = await fetchApi('/auth/get-me');
-        setUser(data.user);
+        const response = await fetchApi('/auth/get-me');
+        if (response.$ok) {
+          setUser(response.data.user);
+        } else {
+          router.push('/auth/login');
+        }
       } catch (error) {
         // If not authenticated, redirect to login
         router.push('/auth/login');
@@ -51,7 +55,7 @@ export default function DashboardLayout({
     { name: 'Overview', href: '/dashboard', icon: Home },
     { name: 'Advisory Chat', href: '/dashboard/chatbot', icon: MessageSquare },
     { name: 'Social Matrix', href: '/dashboard/chats', icon: Users },
-    { name: 'Explore', href: '/dashboard/explore', icon: Map },
+    { name: 'Scam Registry', href: '/dashboard/explore', icon: Map },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
 
