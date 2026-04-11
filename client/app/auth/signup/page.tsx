@@ -29,6 +29,11 @@ export default function SignupPage() {
         body: JSON.stringify({ code }),
       });
       
+      if (!data.$ok) {
+        toast.error(data.message || 'Google Authentication failed');
+        return;
+      }
+
       localStorage.setItem('token', data.token);
       toast.success(data.message || 'Access granted. Welcome to VoyageAI');
       router.push('/dashboard');
@@ -51,7 +56,7 @@ export default function SignupPage() {
 
     try {
       const name = `${formData.firstName} ${formData.lastName}`.trim();
-      await fetchApi('/auth/signup', {
+      const data = await fetchApi('/auth/signup', {
         method: 'POST',
         body: JSON.stringify({
           name,
@@ -60,6 +65,11 @@ export default function SignupPage() {
           userRole: formData.userRole
         }),
       });
+
+      if (!data.$ok) {
+        toast.error(data.message || 'Signup failed');
+        return;
+      }
 
       toast.success('Dossier created. Verification required.');
       router.push('/auth/login');

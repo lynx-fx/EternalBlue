@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { 
   Search, 
   Plus, 
@@ -14,14 +15,27 @@ import {
   ArrowLeft,
   Loader2,
   ShieldCheck,
-  Globe
+  Globe,
+  MapPin,
+  Navigation
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchApi } from '@/lib/api';
 import { toast } from 'sonner';
 import io from 'socket.io-client';
+import "leaflet/dist/leaflet.css";
 
-const SOCKET_ENDPOINT = "http://localhost:8000"; // Should match server port
+// Dynamic import for the entire Map component to prevent SSR and DOM issues
+const SafetyMap = dynamic(() => import('./SafetyMap'), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-slate-50 flex items-center justify-center">
+      <Loader2 className="animate-spin text-emerald-500" />
+    </div>
+  )
+});
+
+const SOCKET_ENDPOINT = "http://localhost:8000";
 
 interface Traveller {
   _id: string;
@@ -36,6 +50,7 @@ interface Chat {
   isGroupChat: boolean;
   users: Traveller[];
   latestMessage?: any;
+  coordinates?: [number, number];
 }
 
 export default function ChatsPage() {
@@ -54,10 +69,32 @@ export default function ChatsPage() {
   const socket = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Map related state
+  const [hubs, setHubs] = useState<Chat[]>([]);
+  const [L, setL] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
+    if (typeof window !== "undefined") {
+      import("leaflet").then((leaflet) => {
+        setL(leaflet.default);
+      });
+    }
     fetchUserData();
     fetchExistingChats();
+    fetchHubs();
   }, []);
+
+  const customIcon = useMemo(() => {
+    if (!L) return null;
+    return new L.Icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+    });
+  }, [L]);
 
   useEffect(() => {
     if (user) {
@@ -75,10 +112,9 @@ export default function ChatsPage() {
     if (socket.current) {
       socket.current.on("message recieved", (newMessageRecieved: any) => {
         if (!selectedChat || selectedChat._id !== newMessageRecieved.chat._id) {
-          // Notify of new message in other chat
           fetchExistingChats();
         } else {
-          setMessages([...messages, newMessageRecieved]);
+          setMessages(prev => [...prev, newMessageRecieved]);
         }
       });
     }
@@ -111,12 +147,23 @@ export default function ChatsPage() {
   const fetchExistingChats = async () => {
     setLoading(true);
     try {
-      const data = await fetchApi('/chats');
+      const data = await fetchApi('/chat');
       setChats(data);
     } catch (err) {
-      toast.error("Cloud connection failed. Could not fetch frequency.");
+      toast.error("Cloud connection failed.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchHubs = async () => {
+    try {
+      // For now, hubs are just group chats with coordinates
+      const data = await fetchApi('/chat');
+      const filteredHubs = data.filter((c: Chat) => c.isGroupChat && c.coordinates);
+      setHubs(filteredHubs);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -149,7 +196,7 @@ export default function ChatsPage() {
 
   const accessChat = async (userId: string) => {
     try {
-      const data = await fetchApi('/chats', {
+      const data = await fetchApi('/chat', {
         method: 'POST',
         body: JSON.stringify({ userId }),
       });
@@ -162,6 +209,32 @@ export default function ChatsPage() {
       setSearchResults([]);
     } catch (err) {
       toast.error("Frequency lock failed.");
+    }
+  };
+
+  const joinHub = async (hub: Chat) => {
+    const isMember = hub.users.some(u => u._id === user?._id);
+    if (isMember) {
+      setSelectedChat(hub);
+      return;
+    }
+
+    try {
+      toast.loading(`Establishing link to ${hub.chatName}...`);
+      const data = await fetchApi('/chat/groupadd', {
+        method: 'PUT',
+        body: JSON.stringify({
+          chatId: hub._id,
+          userId: user?._id
+        }),
+      });
+      toast.dismiss();
+      toast.success(`Successfully joined ${hub.chatName}`);
+      
+      fetchExistingChats();
+      setSelectedChat(data);
+    } catch (err) {
+      toast.error("Hub entry denied.");
     }
   };
 
@@ -242,6 +315,7 @@ export default function ChatsPage() {
             </div>
           ) : (
             <div className="space-y-1">
+              <p className="px-6 py-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Active Links</p>
               {loading ? (
                 [1,2,3].map(i => <div key={i} className="h-20 bg-slate-50 rounded-3xl animate-pulse m-2" />)
               ) : chats.length > 0 ? (
@@ -259,7 +333,9 @@ export default function ChatsPage() {
                     >
                       <div className="relative">
                         <div className="w-14 h-14 bg-emerald-100 rounded-[1.2rem] flex items-center justify-center text-emerald-600 shadow-sm overflow-hidden">
-                          {otherUser?.profileUrl ? (
+                          {chat.isGroupChat ? (
+                            <Hash size={24} strokeWidth={2.5} />
+                          ) : otherUser?.profileUrl ? (
                             <img src={otherUser.profileUrl} className="w-full h-full object-cover" />
                           ) : (
                             <User size={24} strokeWidth={2.5} />
@@ -296,7 +372,7 @@ export default function ChatsPage() {
         </div>
       </div>
 
-      {/* Main Chat Area */}
+      {/* Main Chat Area / Map Integration */}
       <div className={`flex-1 flex flex-col relative ${!selectedChat ? 'hidden md:flex' : 'flex'}`}>
         {selectedChat ? (
           <>
@@ -310,7 +386,9 @@ export default function ChatsPage() {
                   <ArrowLeft size={20} />
                 </button>
                 <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                   {getOtherUser(selectedChat.users)?.profileUrl ? (
+                   {selectedChat.isGroupChat ? (
+                     <Hash size={22} strokeWidth={2.5} />
+                   ) : getOtherUser(selectedChat.users)?.profileUrl ? (
                      <img src={getOtherUser(selectedChat.users)?.profileUrl} className="w-full h-full object-cover rounded-2xl" />
                    ) : (
                      <User size={22} strokeWidth={2.5} />
@@ -395,32 +473,52 @@ export default function ChatsPage() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center space-y-8 p-12 text-center">
-            <div className="relative">
-              <div className="absolute inset-0 bg-emerald-500/20 blur-[100px] rounded-full scale-150 animate-pulse" />
-              <div className="relative w-40 h-40 bg-emerald-50 rounded-[4rem] flex items-center justify-center text-emerald-600 shadow-2xl shadow-emerald-200 border border-emerald-100">
-                 <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                   <Users size={120} />
-                 </div>
-                 <MessageCircle size={80} strokeWidth={1} />
-              </div>
+          <div className="flex-1 flex flex-col relative h-full">
+            {/* Tactical Map Integration */}
+            <div className="absolute inset-0 z-0 text-slate-900">
+               {mounted && (
+                 <SafetyMap hubs={hubs} onJoin={joinHub} />
+               )}
             </div>
-            <div className="space-y-4 relative z-10">
-              <h1 className="text-4xl font-black text-slate-950 uppercase tracking-tighter">Voyage Social Matrix</h1>
-              <p className="text-slate-500 font-medium max-w-sm mx-auto leading-relaxed">
-                Connect with the synchronized network of global explorers. Share intelligence, verify routes, and navigate safely together.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-4 w-full max-w-sm pt-8">
-               <div className="p-6 bg-slate-50 rounded-[2.5rem] border border-slate-100">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Sync Nodes</p>
-                  <p className="text-2xl font-black text-slate-950 leading-none">1,204+</p>
-               </div>
-               <div className="p-6 bg-emerald-50 rounded-[2.5rem] border border-emerald-100">
-                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">Secure Link</p>
-                  <p className="text-2xl font-black text-emerald-700 leading-none">ACTIVE</p>
-               </div>
-            </div>
+
+            {/* Overlay UI */}
+             <div className="absolute inset-0 pointer-events-none z-10 p-12 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                   <div className="bg-white/80 backdrop-blur-xl p-6 rounded-[2.5rem] border border-white shadow-2xl shadow-emerald-900/10 pointer-events-auto max-w-sm">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center text-white">
+                          <Navigation size={14} />
+                        </div>
+                        <h2 className="text-sm font-black text-slate-950 uppercase tracking-widest">Tactical Hub Overlay</h2>
+                      </div>
+                      <p className="text-xs font-medium text-slate-500 leading-relaxed">
+                        Identify active traveler clusters on the map. Click a regional safety hub to join the high-fidelity communication matrix.
+                      </p>
+                   </div>
+                   
+                   <div className="bg-slate-950 text-white p-6 rounded-[2.5rem] border border-slate-800 shadow-2xl pointer-events-auto flex items-center gap-6">
+                      <div className="text-right">
+                         <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest leading-none">Global Sync</p>
+                         <p className="text-lg font-black tracking-tighter">VOYAGE-S4</p>
+                      </div>
+                      <div className="w-px h-8 bg-slate-800" />
+                      <div className="flex -space-x-3">
+                         {[1,2,3].map(i => (
+                           <div key={i} className="w-10 h-10 rounded-full bg-slate-800 border-2 border-slate-950 flex items-center justify-center text-[10px] font-black font-mono">
+                             U0{i}
+                           </div>
+                         ))}
+                      </div>
+                   </div>
+                </div>
+
+                <div className="flex justify-center">
+                   <div className="bg-white/90 backdrop-blur-md px-8 py-4 rounded-full border border-emerald-100 shadow-xl pointer-events-auto flex items-center gap-4 animate-bounce">
+                      <MapPin size={16} className="text-emerald-600" />
+                      <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em]">Select a Cluster to Enter the Net</span>
+                   </div>
+                </div>
+             </div>
           </div>
         )}
       </div>
@@ -438,6 +536,18 @@ export default function ChatsPage() {
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #e2e8f0;
+        }
+        .leaflet-container {
+          background-color: #f8fafc !important;
+        }
+        .custom-popup .leaflet-popup-content-wrapper {
+          border-radius: 2rem;
+          padding: 0.5rem;
+          border: 1px solid #f1f5f9;
+          box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .custom-popup .leaflet-popup-tip {
+          background: white;
         }
       `}</style>
     </div>

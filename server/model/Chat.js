@@ -18,6 +18,10 @@ const chatSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    coordinates: {
+      type: [Number], // [lat, lng]
+      default: undefined
+    }
   },
   {
     timestamps: true,

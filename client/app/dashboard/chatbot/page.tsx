@@ -37,9 +37,13 @@ const AIResponse = ({ text, isNew }: { text: string; isNew?: boolean }) => {
   useEffect(() => {
     if (isNew) {
       let index = 0;
+      // Calculate step size to finish within ~2-3 seconds for long texts
+      // Min step of 1, scale up for longer texts
+      const step = Math.max(2, Math.ceil(text.length / 150));
+      
       const interval = setInterval(() => {
         setDisplayedText(text.slice(0, index));
-        index += 3; // Type 3 characters at a time for speed/smoothness
+        index += step;
         if (index > text.length) {
           setDisplayedText(text);
           clearInterval(interval);

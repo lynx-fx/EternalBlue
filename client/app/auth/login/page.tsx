@@ -24,6 +24,11 @@ export default function LoginPage() {
         body: JSON.stringify({ code }),
       });
       
+      if (!data.$ok) {
+        toast.error(data.message || 'Google Authentication failed');
+        return;
+      }
+
       localStorage.setItem('token', data.token);
       toast.success(data.message || 'Access granted. Welcome Back.');
       router.push('/dashboard');
@@ -49,6 +54,11 @@ export default function LoginPage() {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
+
+      if (!data.$ok) {
+        toast.error(data.message || 'Authentication failed');
+        return;
+      }
 
       localStorage.setItem('token', data.token);
       toast.success('Access granted. Welcome Back.');
