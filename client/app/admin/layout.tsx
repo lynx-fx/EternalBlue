@@ -55,7 +55,7 @@ export default function DashboardLayout({
     { name: 'Overview', href: '/admin/dashboard', icon: ShieldCheck },
     { name: 'User Control', href: '/admin/dashboard/users', icon: Users },
     { name: 'Scam Directives', href: '/admin/dashboard/scams', icon: AlertOctagon },
-    { name: 'System Logs', href: '/admin/dashboard/settings', icon: Settings },
+    { name: 'Settings', href: '/admin/dashboard/settings', icon: Settings },
   ];
 
   return (
@@ -90,8 +90,8 @@ export default function DashboardLayout({
                   className={`
                     flex items-center gap-4 py-4 pl-6 relative transition-all duration-300 rounded-l-full group
                     ${active 
-                      ? "bg-[#F8FDF9] text-emerald-700 z-10 shadow-sm" 
-                      : "text-emerald-50 hover:text-white hover:bg-white/10"
+                      ? "bg-[#F8FDF9] text-emerald-700 z-10 shadow-sm pointer-events-none" 
+                      : "text-emerald-50 hover:text-white hover:bg-emerald-500/30"
                     }
                   `}
                 >

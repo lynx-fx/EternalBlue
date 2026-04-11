@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Users, Mail, Key, Plus, Activity, AlertOctagon, CheckCircle, Database } from 'lucide-react';
+import { ShieldCheck, Users, Mail, Key, Plus, Activity, AlertOctagon, CheckCircle, Database, Globe } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 import { toast } from 'sonner';
 
