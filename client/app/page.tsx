@@ -1,32 +1,35 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Search, Send, User, ChevronRight, Star, Plane, Train, Bus, Car, ArrowUpRight } from "lucide-react";
+import RecommendationsSection from "@/components/landing/RecommendationsSection";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#F7F7F7] text-slate-900 font-sans pb-10 selection:bg-[#1C3E43] selection:text-white">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between px-6 py-6 md:px-10 max-w-[1400px] mx-auto">
-        <div className="font-semibold text-2xl tracking-tighter text-[#1C3E43]">VoyageAI</div>
-        
-        <div className="hidden md:flex items-center gap-10 bg-white px-8 py-3.5 rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] text-sm font-medium border border-slate-100/50">
-          <Link href="#" className="text-slate-900">Discover</Link>
-          <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">Group Chats</Link>
-          <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">AI Itineraries</Link>
-          <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">Alerts</Link>
-        </div>
+      {/* Fixed Navigation */}
+      <div className="fixed top-0 inset-x-0 z-50 bg-[#F7F7F7]/80 backdrop-blur-md">
+        <nav className="flex items-center justify-between px-6 py-4 md:px-10 max-w-[1400px] mx-auto">
+          <div className="font-semibold text-2xl tracking-tighter text-[#1C3E43]">VoyageAI</div>
+          
+          <div className="hidden md:flex items-center gap-10 bg-white px-8 py-3.5 rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] text-sm font-medium border border-slate-100/50">
+            <Link href="#" className="text-slate-900">Discover</Link>
+            <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">Group Chats</Link>
+            <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">AI Itineraries</Link>
+            <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">Alerts</Link>
+          </div>
 
-        <div className="flex items-center gap-3">
-          <Link href="/auth/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 px-4 transition-colors">
-            Log In
-          </Link>
-          <Link href="/auth/signup" className="bg-[#1C3E43] text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#122b2e] transition-colors shadow-lg shadow-[#1C3E43]/20">
-            Sign Up
-          </Link>
-        </div>
-      </nav>
+          <div className="flex items-center gap-3">
+            <Link href="/auth/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 px-4 transition-colors">
+              Log In
+            </Link>
+            <Link href="/auth/signup" className="bg-[#1C3E43] text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#122b2e] transition-colors shadow-lg shadow-[#1C3E43]/20">
+              Sign Up
+            </Link>
+          </div>
+        </nav>
+      </div>
 
-      <main className="max-w-[1400px] mx-auto px-6 md:px-10 mt-8 md:mt-12">
+      <main className="max-w-[1400px] mx-auto px-6 md:px-10 pt-28 md:pt-32">
         {/* Hero Section */}
         <section className="mb-28">
           <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-10">
@@ -60,7 +63,7 @@ export default function Home() {
               <div className="flex items-center flex-1 divide-x divide-slate-100/80">
                 <div className="px-8 flex-1">
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Location</p>
-                  <p className="text-sm font-semibold text-slate-800">Rinjani, Indonesia</p>
+                  <p className="text-sm font-semibold text-slate-800">Annapurna Circuit, Nepal</p>
                 </div>
                 <div className="px-8 flex-1">
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Check In</p>
@@ -82,132 +85,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Packages Section */}
-        <section className="mb-24 pt-6">
-          <div className="flex justify-between items-end gap-8 mb-12">
-            <h2 className="text-[2.5rem] font-medium leading-[1.05] tracking-tight max-w-[400px] text-[#161616]">
-              Explore Our Exclusive Tour Packages
-            </h2>
-            <p className="text-slate-500 text-[13px] max-w-[280px] text-right leading-relaxed pb-1">
-              Find your perfect getaway with our curated tour packages. Adventure, relaxation or culture—it's all here for you!
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Card 1 */}
-            <div className="bg-white rounded-[2rem] p-3 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col group cursor-pointer hover:shadow-xl hover:shadow-black/[0.03] transition-all duration-300">
-              <div className="relative w-full aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-5">
-                <Image src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=2070&auto=format&fit=crop" alt="Jaya Wijaya Mountain" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-medium px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
-                   <div className="w-1 h-1 bg-white rounded-full animate-pulse" /> Indonesia
-                </div>
-              </div>
-              <div className="px-2 pb-2">
-                <div className="flex justify-between items-center mb-1">
-                  <h3 className="font-semibold text-slate-800 text-[17px]">Jaya Wijaya Mountain</h3>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                    <Star size={12} className="fill-amber-400 text-amber-400" /> 5.0
-                  </div>
-                </div>
-                <p className="text-slate-900 font-bold text-[15px] mb-5">$456.80</p>
-                
-                <div className="flex justify-between items-end">
-                   <div className="space-y-1.5">
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> Including Accommodation</p>
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> Free Professional Guide Tour</p>
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> 3 Days 2 Nights Trip</p>
-                   </div>
-                   <button className="bg-[#1C3E43] text-white text-[11px] px-5 py-2.5 rounded-full font-medium hover:bg-[#122b2e] transition-colors border border-[#1C3E43]">
-                     Booking
-                   </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="bg-white rounded-[2rem] p-3 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col group cursor-pointer hover:shadow-xl hover:shadow-black/[0.03] transition-all duration-300">
-              <div className="relative w-full aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-5">
-                <Image src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?q=80&w=2070&auto=format&fit=crop" alt="Fuji Mountain" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-medium px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
-                   <div className="w-1 h-1 bg-white rounded-full animate-pulse" /> Japan
-                </div>
-              </div>
-              <div className="px-2 pb-2">
-                <div className="flex justify-between items-center mb-1">
-                  <h3 className="font-semibold text-slate-800 text-[17px]">Fuji Mountain</h3>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                    <Star size={12} className="fill-amber-400 text-amber-400" /> 4.8
-                  </div>
-                </div>
-                <p className="text-slate-900 font-bold text-[15px] mb-5">$456.80</p>
-                
-                <div className="flex justify-between items-end">
-                   <div className="space-y-1.5">
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> Bullet Train Included</p>
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> Tour Guide Available</p>
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> 2 Days 1 Night Trip</p>
-                   </div>
-                   <button className="bg-transparent text-[#1C3E43] text-[11px] px-5 py-2.5 rounded-full font-bold transition-colors border border-[#1C3E43]/20 hover:bg-[#1C3E43] hover:text-white">
-                     Booking
-                   </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-white rounded-[2rem] p-3 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col group cursor-pointer hover:shadow-xl hover:shadow-black/[0.03] transition-all duration-300">
-              <div className="relative w-full aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-5">
-                <Image src="https://images.unsplash.com/photo-1524866299105-08103df12ba6?q=80&w=2066&auto=format&fit=crop" alt="Kilimanjaro" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                 <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-medium px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
-                   <div className="w-1 h-1 bg-white rounded-full animate-pulse" /> Africa
-                </div>
-              </div>
-              <div className="px-2 pb-2">
-                <div className="flex justify-between items-center mb-1">
-                  <h3 className="font-semibold text-slate-800 text-[17px]">Kilimanjaro</h3>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                    <Star size={12} className="fill-amber-400 text-amber-400" /> 5.0
-                  </div>
-                </div>
-                <p className="text-slate-900 font-bold text-[15px] mb-5">$456.80</p>
-                <div className="flex justify-between items-end">
-                   <div className="space-y-1.5">
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> Full Gear Provided</p>
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> Base Camp Setup</p>
-                     <p className="text-[9px] text-slate-500 flex items-center gap-1.5 font-medium uppercase tracking-wide"><ChevronRight size={10} className="text-slate-300"/> 7 Days Hike</p>
-                   </div>
-                   <button className="bg-transparent text-[#1C3E43] text-[11px] px-5 py-2.5 rounded-full font-bold transition-colors border border-[#1C3E43]/20 hover:bg-[#1C3E43] hover:text-white">
-                     Booking
-                   </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Guide Profile Cards (Right Stack) */}
-            <div className="flex flex-col gap-4 h-full">
-               <div className="h-1/2 w-full relative rounded-3xl overflow-hidden bg-white shadow-sm border border-slate-100 p-2 pb-0 group cursor-pointer">
-                  <div className="w-full h-[65%] relative rounded-2xl overflow-hidden mb-3">
-                    <Image src="https://images.unsplash.com/photo-1695653422055-1262d00c3bcf?q=80&w=2072&auto=format&fit=crop" alt="Guide Experience" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                    <div className="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/40 group-hover:bg-white group-hover:text-slate-900 transition-colors">
-                       <ArrowUpRight size={16} />
-                    </div>
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-snug px-2">More than 100+ tour guides ready to accompany you.</p>
-               </div>
-               
-               <div className="h-1/2 bg-[#1C3E43] text-white rounded-3xl p-6 flex flex-col justify-between items-center text-center relative overflow-hidden group cursor-pointer">
-                   {/* Background map graphic abstract */}
-                   <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none" />
-                   
-                   <p className="text-[10px] uppercase tracking-widest text-[#9ECEC2] font-bold">Special</p>
-                   <h3 className="font-semibold text-lg leading-tight relative z-10">Guide <br/>Offers</h3>
-                   <button className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white hover:text-[#1C3E43] transition-all relative z-10">
-                      <ArrowUpRight size={16} />
-                   </button>
-               </div>
-            </div>
-          </div>
-        </section>
+        {/* Dynamic Recommendations Section */}
+        <RecommendationsSection />
 
         {/* Collaborative Group Travel Section */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-20 bg-white rounded-[3rem] p-6 lg:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.03)] border border-slate-100/50">

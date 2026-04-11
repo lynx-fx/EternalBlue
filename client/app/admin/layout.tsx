@@ -16,7 +16,8 @@ import {
   Map,
   Sparkles,
   Users,
-  AlertOctagon
+  AlertOctagon,
+  Flag
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 
@@ -89,10 +90,10 @@ export default function DashboardLayout({
                   key={item.name}
                   href={item.href}
                   className={`
-                    flex items-center gap-4 py-4 pl-6 relative transition-all duration-300 group
+                    flex items-center gap-4 py-4 pl-6 relative group
                     ${active 
                       ? "bg-[#F8FDF9] text-emerald-700 z-10 shadow-sm pointer-events-none rounded-l-full" 
-                      : "text-emerald-50 hover:text-white hover:bg-emerald-500/30 rounded-2xl mr-10"
+                      : "text-emerald-50 hover:text-white hover:bg-emerald-500/30 rounded-2xl mr-10 transition-colors duration-300"
                     }
                   `}
                 >

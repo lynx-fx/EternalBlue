@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMapEvents } from 'react-leaflet';
 import { Sparkles } from 'lucide-react';
 import L from 'leaflet';
 import "leaflet/dist/leaflet.css";
@@ -75,10 +75,13 @@ export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps)
         </Marker>
       ))}
 
-      {/* Beacon Bubbles for New Hubs (only show if no hub exists at those coords) */}
-      {BEACONS.filter(beacon => 
-        !hubs.some(hub => hub.coordinates && hub.coordinates[0] === beacon.coords[0] && hub.coordinates[1] === beacon.coords[1])
-      ).map(beacon => (
+      {/* Beacon Bubbles for New Hubs (show if no hub exists at coords OR if all existing ones are full) */}
+      {BEACONS.filter(beacon => {
+        const hubsAtCoords = hubs.filter(h => h.coordinates && h.coordinates[0] === beacon.coords[0] && h.coordinates[1] === beacon.coords[1]);
+        if (hubsAtCoords.length === 0) return true;
+        // If all hubs at these coords are full (20 users), show the beacon again to allow creating a new instance
+        return hubsAtCoords.every(h => (h.users?.length || 0) >= 20);
+      }).map(beacon => (
         <CircleMarker
           key={beacon.id}
           center={beacon.coords as [number, number]}
@@ -112,6 +115,23 @@ export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps)
           </Popup>
         </CircleMarker>
       ))}
+      {/* Map Click Handler for Custom Clusters */}
+      <MapEventHandler onCreateHub={onCreateHub} />
     </MapContainer>
   );
+}
+
+// Child component to hook into Leaflet map events
+function MapEventHandler({ onCreateHub }: { onCreateHub: (name: string, coords: [number, number]) => void }) {
+  useMapEvents({
+    click: (e) => {
+      const lat = parseFloat(e.latlng.lat.toFixed(4));
+      const lng = parseFloat(e.latlng.lng.toFixed(4));
+      const customName = `Sector [${lat}, ${lng}]`;
+      
+      // Directly call the handler, which will trigger the custom UI modal
+      onCreateHub(customName, [lat, lng]);
+    }
+  });
+  return null;
 }

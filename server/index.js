@@ -9,6 +9,8 @@ const chatRouter = require("./route/chatRouter");
 const messageRouter = require("./route/messageRouter");
 const aiRouter = require("./route/aiRouter");
 const scamRouter = require("./route/scamRouter");
+const recommendationRouter = require("./route/recommendationRouter");
+const reportRouter = require("./route/reportRouter");
 require("./job/cron");
 
 const frontend =
@@ -98,6 +100,12 @@ mongoose
           if (user._id == newMessageRecieved.sender._id) return;
           socket.in(user._id).emit("message recieved", newMessageRecieved);
         });
+      });
+
+      // Broadcast global map updates (creating new hubs)
+      socket.on("hub created", (newHub) => {
+        // Broadcast to EVERYONE except the sender
+        socket.broadcast.emit("hub map update", newHub);
       });
 
       socket.off("setup", (userData) => {
