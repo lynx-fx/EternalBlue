@@ -623,7 +623,7 @@ export default function ChatsPage() {
                    onChange={(e) => setNewMessage(e.target.value)}
                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                    placeholder="Inject transmission into frequencies..."
-                   className="flex-1 bg-transparent border-none focus:ring-0 text-sm font-bold text-slate-700 placeholder:text-slate-400 py-4"
+                   className="flex-1 bg-transparent border-none focus:ring-0 outline-none text-sm font-bold text-slate-700 placeholder:text-slate-400 py-4"
                  />
                  <button 
                    onClick={sendMessage}
