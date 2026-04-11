@@ -17,7 +17,8 @@ import {
   ShieldCheck,
   Globe,
   MapPin,
-  Navigation
+  Navigation,
+  Flag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchApi } from '@/lib/api';
@@ -365,6 +366,25 @@ export default function ChatsPage() {
     return users.find(u => u._id !== user?._id);
   };
 
+  const handleReportUser = async (userName: string, userId: string, messageContent: string) => {
+    try {
+      const response = await fetchApi('/reports', {
+        method: 'POST',
+        body: JSON.stringify({
+          reportedUserId: userId,
+          messageContent: messageContent
+        })
+      });
+      if (response.$ok) {
+        toast.success(`User ${userName} has been reported. Intelligence matrix notified.`);
+      } else {
+        toast.error('Failed to submit report into the Matrix.');
+      }
+    } catch (err) {
+      toast.error('Network block while filing user report.');
+    }
+  };
+
   return (
     <div className="h-[calc(100vh-140px)] flex bg-white/40 backdrop-blur-xl rounded-[3rem] border border-white overflow-hidden shadow-2xl shadow-emerald-900/5 animate-fade-in">
       
@@ -551,21 +571,36 @@ export default function ChatsPage() {
                     key={m._id}
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}
+                    className={`flex group/msg ${isMine ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`max-w-[70%] space-y-1 ${isMine ? 'items-end' : 'items-start'}`}>
+                    <div className={`max-w-[70%] space-y-1 relative ${isMine ? 'items-end' : 'items-start'}`}>
                       {!isMine && selectedChat.isGroupChat && (
-                        <span className="text-[10px] font-black text-emerald-600/80 uppercase tracking-widest block px-4 mb-1">
-                          {m.sender?.name || "Explorer"}
-                        </span>
+                        <div className="flex justify-between items-end px-4 mb-1">
+                          <span className="text-[10px] font-black text-emerald-600/80 uppercase tracking-widest block">
+                            {m.sender?.name || "Explorer"}
+                          </span>
+                        </div>
                       )}
-                      <div className={`p-5 rounded-[2.5rem] text-sm font-medium shadow-xl border ${
+                      
+                      <div className={`relative p-5 rounded-[2.5rem] text-sm font-medium shadow-xl border ${
                         isMine 
                           ? 'bg-slate-950 text-white rounded-tr-none border-slate-800 shadow-slate-900/10' 
                           : 'bg-white text-slate-700 rounded-tl-none border-slate-100 shadow-slate-200/50'
                       }`}>
                         {m.content}
+                        
+                        {/* Report feature for incoming messages */}
+                        {!isMine && (
+                          <button 
+                            onClick={() => handleReportUser(m.sender?.name || "Explorer", m.sender?._id, m.content)}
+                            className="absolute top-1/2 -translate-y-1/2 -right-10 w-8 h-8 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center text-slate-300 opacity-0 group-hover/msg:opacity-100 hover:text-red-500 hover:bg-red-50 hover:border-red-100 group-hover/msg:translate-x-2 transition-all duration-300"
+                            title="Report User"
+                          >
+                            <Flag size={14} />
+                          </button>
+                        )}
                       </div>
+                      
                       <span className={`text-[9px] font-black text-slate-300 uppercase tracking-widest block px-4 mt-2 ${isMine ? 'text-right' : 'text-left'}`}>
                         {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
