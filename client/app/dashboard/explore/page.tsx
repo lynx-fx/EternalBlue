@@ -14,6 +14,8 @@ import {
   History
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 interface Scam {
   _id: string;
@@ -29,6 +31,7 @@ export default function ExplorePage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedScam, setSelectedScam] = useState<Scam | null>(null);
 
   const fetchScams = async (country?: string) => {
     setLoading(true);
@@ -190,7 +193,8 @@ export default function ExplorePage() {
               {filteredScams.map((scam) => (
                 <div 
                   key={scam._id}
-                  className="group bg-white border border-slate-100 p-8 rounded-[2.5rem] hover:shadow-2xl hover:shadow-emerald-900/5 transition-all flex flex-col justify-between"
+                  onClick={() => setSelectedScam(scam)}
+                  className="group bg-white border border-slate-100 p-8 rounded-[2.5rem] hover:shadow-2xl hover:shadow-emerald-900/5 transition-all flex flex-col justify-between cursor-pointer"
                 >
                   <div className="space-y-4">
                     <div className="flex items-start justify-between">
@@ -296,6 +300,82 @@ export default function ExplorePage() {
            </div>
         </div>
       </div>
+
+
+      <AnimatePresence>
+        {selectedScam && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedScam(null)}
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-white rounded-[3.5rem] overflow-hidden shadow-2xl"
+            >
+              <button 
+                onClick={() => setSelectedScam(null)}
+                className="absolute top-8 right-8 text-slate-400 hover:text-slate-600 transition-colors z-20"
+              >
+                <X size={24} />
+              </button>
+
+              <div className="p-10 md:p-16 space-y-8">
+                <div className="flex items-start justify-between gap-6">
+                  <div className="space-y-4">
+                    <div className={`inline-flex px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${getSeverityStyles(selectedScam.severity)}`}>
+                      {selectedScam.severity} Risk Personnel
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+                      {selectedScam.title}
+                    </h2>
+                    <div className="flex items-center gap-2 text-emerald-600">
+                       <MapPin size={16} />
+                       <span className="text-xs font-black uppercase tracking-widest">Region: {selectedScam.country}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] border-b border-slate-100 pb-2">Intelligence Brief</p>
+                   <p className="text-slate-600 text-base font-medium leading-relaxed italic">
+                     {selectedScam.description}
+                   </p>
+                </div>
+
+                <div className="flex items-center justify-between pt-8 border-t border-slate-50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400">
+                      <History size={20} />
+                    </div>
+                    <div>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Observation Logged</p>
+                      <p className="text-sm font-black text-slate-900">{new Date(selectedScam.createdAt).toLocaleDateString(undefined, { dateStyle: 'long' })}</p>
+                    </div>
+                  </div>
+                  <div className="hidden md:flex items-center gap-2 px-6 py-3 bg-emerald-50 rounded-2xl border border-emerald-100">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className="text-[10px] font-black text-emerald-950 uppercase tracking-widest">Verified Entry</span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => setSelectedScam(null)}
+                  className="w-full py-5 bg-slate-950 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-slate-900/10"
+                >
+                  Confirm Intelligence & Close
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
