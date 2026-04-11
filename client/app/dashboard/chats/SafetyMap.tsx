@@ -75,8 +75,10 @@ export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps)
         </Marker>
       ))}
 
-      {/* Beacon Bubbles for New Hubs */}
-      {BEACONS.map(beacon => (
+      {/* Beacon Bubbles for New Hubs (only show if no hub exists at those coords) */}
+      {BEACONS.filter(beacon => 
+        !hubs.some(hub => hub.coordinates && hub.coordinates[0] === beacon.coords[0] && hub.coordinates[1] === beacon.coords[1])
+      ).map(beacon => (
         <CircleMarker
           key={beacon.id}
           center={beacon.coords as [number, number]}

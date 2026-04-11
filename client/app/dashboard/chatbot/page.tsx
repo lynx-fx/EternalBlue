@@ -70,7 +70,20 @@ export default function DashboardChatbot() {
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [discoveries, setDiscoveries] = useState<{ id: string, name: string, time: string }[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const addToItinerary = (text: string) => {
+    // Extract a name (first few words)
+    const name = text.split('\n')[0].replace(/[#*]/g, '').trim().substring(0, 20) || "Dossier Entry";
+    const newEntry = {
+      id: Date.now().toString(),
+      name: name,
+      time: "Just now"
+    };
+    setDiscoveries(prev => [newEntry, ...prev]);
+    toast.success(`${name} added to your itinerary`);
+  };
 
   useEffect(() => {
     fetchSessions();
@@ -109,9 +122,22 @@ export default function DashboardChatbot() {
   };
 
   const startNewChat = () => {
-    setMessages([]);
+    setMessages([
+      {
+        id: "intro",
+        text: "Hello! I'm your VoyageAI Travel Assistant. I'm specially trained on Himalayan logistics and Nepal-specific travel intelligence. How can I help you plan your next secure expedition today?",
+        sender: "ai",
+        timestamp: new Date(),
+      }
+    ]);
     setCurrentChatId(null);
   };
+
+  useEffect(() => {
+    if (messages.length === 0 && !currentChatId) {
+      startNewChat();
+    }
+  }, [messages, currentChatId]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -135,10 +161,12 @@ export default function DashboardChatbot() {
     setInput("");
     setIsTyping(true);
 
-    const history = messages.map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
-    }));
+    const history = messages
+      .filter((msg, index) => !(index === 0 && msg.sender === 'ai'))
+      .map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
 
     try {
       const response = await fetchApi('/ai/chat', {
@@ -223,14 +251,27 @@ export default function DashboardChatbot() {
                           </div>
                         )}
                         
-                        {m.sender === "ai" && m.id !== "1" && !m.isStreaming && (
+                        {m.sender === "ai" && m.id !== "intro" && !m.isStreaming && (
                           <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             className="mt-4 pt-4 border-t border-emerald-50 flex gap-3"
                           >
-                             <button className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest px-3 py-1.5 bg-emerald-50 rounded-full hover:bg-emerald-100 transition-colors">Apply to Itinerary</button>
-                             <button className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-1.5 hover:text-slate-600 transition-colors">Copy Info</button>
+                             <button 
+                               onClick={() => addToItinerary(m.text)}
+                               className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest px-3 py-1.5 bg-emerald-50 rounded-full hover:bg-emerald-100 transition-colors active:scale-95"
+                             >
+                               Apply to Itinerary
+                             </button>
+                             <button 
+                               onClick={() => {
+                                 navigator.clipboard.writeText(m.text);
+                                 toast.success("Intelligence copied to clipboard");
+                               }}
+                               className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-1.5 hover:text-slate-600 transition-colors active:scale-95"
+                             >
+                               Copy Info
+                             </button>
                           </motion.div>
                         )}
                       </div>
@@ -280,7 +321,7 @@ export default function DashboardChatbot() {
                   className="flex-1 bg-transparent border-none focus:ring-0 text-lg font-medium text-slate-700 placeholder:text-slate-300 outline-none"
                 />
                 <button 
-                  onClick={handleSend}
+                  onClick={() => handleSend()}
                   disabled={!input.trim() || isTyping}
                   className="bg-emerald-600 text-white w-14 h-14 rounded-full flex items-center justify-center hover:bg-emerald-700 disabled:bg-slate-100 disabled:text-slate-300 disabled:cursor-not-allowed transition-all"
                 >
@@ -307,7 +348,7 @@ export default function DashboardChatbot() {
                 <h3 className="font-display font-bold text-slate-900 uppercase tracking-widest text-sm">Mission Log</h3>
               </div>
               <button 
-                onClick={startNewChat}
+                onClick={() => startNewChat()}
                 className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-100 transition-colors active:scale-95"
                 title="New Expedition"
               >
@@ -403,29 +444,39 @@ export default function DashboardChatbot() {
             </div>
           </div>
 
+          {/* Discoveries */}
           <div>
-             <div className="flex items-center gap-3 mb-8">
+            <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
-                <MapPin size={20} strokeWidth={2.5} />
+                <MapPin size={20} className="text-blue-600" />
               </div>
               <h3 className="font-display font-bold text-slate-900 uppercase tracking-widest text-sm">Discoveries</h3>
             </div>
             
             <div className="grid gap-4">
-              {[
-                { name: 'Kathmandu, NP', type: 'Heritage Hub', color: 'bg-emerald-500' },
-                { name: 'Pokhara, NP', type: 'Adventure Base', color: 'bg-blue-500' }
-              ].map((dest, i) => (
-                <div key={i} className="group cursor-pointer">
-                  <div className="bg-white border border-slate-100 rounded-3xl p-5 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-200/20 transition-all duration-500 flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-black text-slate-900 mb-0.5">{dest.name}</p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{dest.type}</p>
-                    </div>
-                    <div className={`w-2 h-2 rounded-full ${dest.color} animate-pulse`}></div>
-                  </div>
+              {discoveries.length === 0 ? (
+                <div className="p-8 border-2 border-dashed border-slate-100 rounded-[2.5rem] text-center opacity-50">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">No Nodes Detected</p>
                 </div>
-              ))}
+              ) : (
+                discoveries.map((dest, i) => (
+                  <motion.div 
+                    layout
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    key={dest.id} 
+                    className="group cursor-pointer"
+                  >
+                    <div className="bg-white border border-slate-100 rounded-3xl p-5 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-200/20 transition-all duration-500 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-black text-slate-900 mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis max-w-[180px]">{dest.name}</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Added to route • {dest.time}</p>
+                      </div>
+                      <div className={`w-2 h-2 rounded-full bg-emerald-500 animate-pulse`}></div>
+                    </div>
+                  </motion.div>
+                ))
+              )}
             </div>
           </div>
 

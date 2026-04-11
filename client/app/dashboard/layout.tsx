@@ -54,6 +54,7 @@ export default function DashboardLayout({
   const navItems = [
     { name: 'Overview', href: '/dashboard', icon: Home },
     { name: 'Advisory Chat', href: '/dashboard/chatbot', icon: MessageSquare },
+    { name: 'Safety Tips', href: '/dashboard/advisory', icon: ShieldCheck },
     { name: 'Social Matrix', href: '/dashboard/chats', icon: Users },
     { name: 'Scam Registry', href: '/dashboard/explore', icon: Map },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
