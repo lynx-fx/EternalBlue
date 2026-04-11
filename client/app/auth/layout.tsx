@@ -1,46 +1,102 @@
+'use client';
+
 import React from 'react';
-import { Compass } from 'lucide-react';
+import { Compass, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#F6FBF5] relative overflow-hidden font-sans">
-      {/* Soft decorative elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-100/50 rounded-full blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-teal-50/50 rounded-full blur-[120px]" />
-      
-      <div className="relative z-10 w-full max-w-md p-6">
-        <div className="mb-8 flex flex-col items-center">
-          <Link href="/" className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-100 ring-4 ring-white">
-              <Compass size={28} />
-            </div>
-          </Link>
-          <h1 className="text-3xl font-extrabold text-emerald-950 tracking-tight">
-            Voyage<span className="text-emerald-600">AI</span>
-          </h1>
-          <p className="text-slate-500 mt-2 text-sm font-medium">Your global guide to seamless travel</p>
-        </div>
+  const pathname = usePathname();
 
-        <div className="bg-white border border-emerald-100/50 rounded-[2.5rem] shadow-2xl shadow-emerald-200/50 p-10 relative overflow-hidden">
-          {/* Subtle background pattern */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50/50 rounded-full -mr-16 -mt-16 blur-2xl" />
-          
-          <div className="relative z-10">
-            {children}
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#F1F7F4] p-4 lg:p-8 font-sans overflow-hidden">
+      {/* Background Accents */}
+      <div className="fixed top-[-10%] left-[-10%] w-[45%] h-[45%] bg-emerald-200/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-teal-200/20 rounded-full blur-[120px] pointer-events-none" />
+      
+      <div className="w-full max-w-[1080px] bg-white rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(16,185,129,0.15)] flex flex-col md:flex-row overflow-hidden relative z-10 border border-white min-h-[600px] max-h-[90vh]">
+        
+        {/* Left Side - Vibrant Emerald Branding */}
+        <div className="w-full md:w-[44%] bg-emerald-600 p-10 lg:p-14 flex flex-col relative overflow-hidden">
+           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-800" />
+           <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none" />
+           
+           <div className="relative z-10 flex flex-col h-full justify-between">
+            <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-105">
+              <div className="w-11 h-11 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-xl shadow-emerald-900/10">
+                <Compass size={22} strokeWidth={2.5} />
+              </div>
+              <span className="text-xl font-bold text-white tracking-tighter uppercase">VoyageAI</span>
+            </Link>
+
+            <div className="space-y-10 mt-16 md:mt-0">
+              <div className="space-y-5">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/10 border border-white/20 rounded-full text-[10px] font-black text-emerald-50 uppercase tracking-widest backdrop-blur-sm">
+                  <Sparkles size={11} />
+                  Operational Protocol 4.1
+                </div>
+                <h2 className="text-5xl lg:text-6xl font-black text-white leading-[0.9] tracking-tighter uppercase">
+                  Elevate <br />
+                  <span className="text-emerald-300">Your Voyage</span>
+                </h2>
+                <p className="text-emerald-50/70 text-sm font-medium max-w-[300px] leading-relaxed">
+                  Join a synchronized safety matrix designed for the modern explorer. Secure your global profile today.
+                </p>
+              </div>
+
+              {/* <div className="space-y-5">
+                {[
+                  { id: 1, label: 'Identity Protocol', active: true },
+                  { id: 2, label: 'Network Config', active: false },
+                  { id: 3, label: 'Initialize Access', active: false },
+                ].map((step) => (
+                  <div key={step.id} className="flex items-center gap-5">
+                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black transition-all ${
+                       step.active ? 'bg-white text-emerald-600 shadow-lg' : 'bg-white/10 text-white/40'
+                     }`}>
+                       {step.id}
+                     </div>
+                     <p className={`text-[10px] font-black uppercase tracking-[0.2em] ${step.active ? 'text-white' : 'text-white/30'}`}>
+                       {step.label}
+                     </p>
+                  </div>
+                ))}
+              </div> */}
+            </div>
           </div>
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-slate-400 text-xs">
-            © 2024 VoyageAI. All rights reserved.
-          </p>
+        {/* Right Side - Clean High-Contrast Form with Flip Animation */}
+        <div className="flex-1 p-10 lg:p-16 bg-white flex flex-col justify-center relative perspective-1000">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, rotateY: 90, scale: 0.95 }}
+              animate={{ opacity: 1, rotateY: 0, scale: 1 }}
+              exit={{ opacity: 0, rotateY: -90, scale: 0.95 }}
+              transition={{ 
+                duration: 0.5, 
+                ease: [0.4, 0, 0.2, 1], // Custom cubic-bezier for snappy feel
+                rotateY: { type: "spring", stiffness: 100, damping: 20 }
+              }}
+              className="w-full max-w-sm mx-auto my-auto h-full flex flex-col justify-center"
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
+
+      <style jsx global>{`
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+      `}</style>
     </div>
   );
 }

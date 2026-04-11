@@ -104,10 +104,14 @@ export default function DashboardLayout({
 
           <div className="mt-auto space-y-4 pt-6 border-t border-slate-50">
             {user && (
-              <div className="flex items-center gap-3 px-2 py-3 bg-slate-50 rounded-2xl">
+              <Link href="/dashboard/settings" className="flex items-center gap-3 px-2 py-3 bg-slate-50 hover:bg-emerald-50 rounded-2xl transition-colors">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold overflow-hidden shadow-sm">
                   {user.profileUrl ? (
-                    <img src={user.profileUrl} alt={user.name} className="w-full h-full object-cover" />
+                    <img 
+                      src={user.profileUrl.startsWith('http') ? user.profileUrl : `http://localhost:8000${user.profileUrl}`} 
+                      alt={user.name} 
+                      className="w-full h-full object-cover" 
+                    />
                   ) : (
                     user.name.charAt(0).toUpperCase()
                   )}
@@ -119,7 +123,7 @@ export default function DashboardLayout({
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{user.role}</p>
                   </div>
                 </div>
-              </div>
+              </Link>
             )}
             
             <button 
@@ -144,9 +148,17 @@ export default function DashboardLayout({
             <h2 className="text-sm font-display font-bold text-emerald-950 uppercase tracking-widest">Command Center</h2>
           </div>
           <div className="flex items-center gap-4">
-             <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-600 transition-colors shadow-sm cursor-pointer">
-                <User size={18} />
-             </div>
+             <Link href="/dashboard/settings" className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-600 transition-colors shadow-sm cursor-pointer overflow-hidden">
+                {user?.profileUrl ? (
+                  <img 
+                    src={user.profileUrl.startsWith('http') ? user.profileUrl : `http://localhost:8000${user.profileUrl}`} 
+                    alt="Profile" 
+                    className="w-full h-full object-cover" 
+                  />
+                ) : (
+                  <User size={18} />
+                )}
+             </Link>
           </div>
         </header>
 

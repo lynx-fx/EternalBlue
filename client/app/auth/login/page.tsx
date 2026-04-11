@@ -3,15 +3,42 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 import { toast } from 'sonner';
+import { useGoogleLogin } from '@react-oauth/google';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const router = useRouter();
+
+  const handleGoogleSuccess = async (response: any) => {
+    setLoading(true);
+    try {
+      const { code } = response;
+      const data = await fetchApi('/auth/google-login', {
+        method: 'POST',
+        body: JSON.stringify({ code }),
+      });
+      
+      localStorage.setItem('token', data.token);
+      toast.success(data.message || 'Access granted. Welcome Back.');
+      router.push('/dashboard');
+    } catch (error: any) {
+      toast.error(error.message || 'Google Authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => toast.error('Google login was unsuccessful. Try again.'),
+    flow: 'auth-code',
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,103 +51,101 @@ export default function LoginPage() {
       });
 
       localStorage.setItem('token', data.token);
-      toast.success('Welcome back, adventurer!');
+      toast.success('Access granted. Welcome Back.');
       router.push('/dashboard');
     } catch (error: any) {
-      toast.error(error.message || 'Login failed');
+      toast.error(error.message || 'Authentication failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-8">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold text-slate-950">Welcome Back</h2>
-        <p className="text-slate-500 text-sm">Sign in to continue your journey.</p>
+    <div className="space-y-8 animate-fade-in">
+      <div className="space-y-2">
+        <h2 className="text-3xl font-black text-slate-950 uppercase tracking-tighter">Sign In Account</h2>
+        <p className="text-slate-500 text-sm font-medium">Synchronize with your global profile.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <button 
+        onClick={() => loginWithGoogle()}
+        disabled={loading}
+        className="w-full flex items-center justify-center gap-4 bg-white border border-slate-100 rounded-2xl py-4 text-slate-600 text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 hover:border-emerald-200 transition-all shadow-sm group disabled:opacity-50"
+      >
+        <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
+        Continue with Google
+      </button>
+
+      <div className="flex items-center gap-6 py-2">
+        <div className="h-px bg-slate-100 flex-1" />
+        <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Access Protocol</span>
+        <div className="h-px bg-slate-100 flex-1" />
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] ml-1">
-            Email Address
-          </label>
-          <div className="relative group">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors">
-              <Mail size={18} />
-            </div>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/50 transition-all text-sm font-medium"
-              placeholder="name@example.com"
-            />
-          </div>
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Network Identity</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-4 px-6 text-slate-900 placeholder-slate-300 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all text-sm font-bold"
+            placeholder="voyager@network.com"
+          />
         </div>
 
         <div className="space-y-2">
           <div className="flex justify-between items-center px-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-              Password
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
+              Encryption Key
             </label>
             <Link 
               href="/auth/forgot-password" 
-              className="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 transition-colors uppercase tracking-wider"
+              className="text-[10px] font-black text-emerald-600 hover:text-emerald-500 transition-colors uppercase tracking-widest"
             >
-              Forgot?
+              Recover
             </Link>
           </div>
-          <div className="relative group">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors">
-              <Lock size={18} />
-            </div>
+          <div className="relative">
             <input
-              type="password"
+              type={showPass ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/50 transition-all text-sm font-medium"
+              className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-4 px-6 text-slate-900 placeholder-slate-300 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all text-sm font-bold"
               placeholder="••••••••"
             />
+            <button 
+              type="button"
+              className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-500"
+              onClick={() => setShowPass(!showPass)}
+            >
+              {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-emerald-600 text-white rounded-2xl py-4 font-bold hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 shadow-lg shadow-emerald-200"
+          className="w-full bg-emerald-600 text-white rounded-2xl py-4.5 font-black transition-all flex items-center justify-center gap-3 group disabled:opacity-50 mt-4 uppercase tracking-widest text-[11px] shadow-xl shadow-emerald-200/50 hover:bg-slate-950"
         >
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <>
-              Sign In
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              Grant Access
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </>
           )}
         </button>
       </form>
 
-      <div className="relative flex items-center justify-center">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-100"></div>
-        </div>
-        <span className="relative px-4 bg-white text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-          Or explore with
-        </span>
-      </div>
-
-      <button className="w-full bg-white border border-slate-200 text-slate-900 rounded-2xl py-4 font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-3 text-sm shadow-sm ring-1 ring-slate-100">
-        <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4 grayscale group-hover:grayscale-0" />
-        Continue with Google
-      </button>
-
-      <p className="text-center text-sm text-slate-500 font-medium">
-        New to VoyageAI?{' '}
-        <Link href="/auth/signup" className="text-emerald-600 font-bold hover:underline decoration-2 underline-offset-4">
-          Create Account
+      <p className="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">
+        New explorer?{' '}
+        <Link href="/auth/signup" className="text-emerald-600 hover:underline decoration-2 underline-offset-4 font-black">
+          Create Dossier
         </Link>
       </p>
     </div>
