@@ -74,6 +74,11 @@ export default function ChatsPage() {
   const [L, setL] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
 
+  // Custom Hub Modal State
+  const [showHubModal, setShowHubModal] = useState(false);
+  const [newHubCoords, setNewHubCoords] = useState<[number, number] | null>(null);
+  const [newHubName, setNewHubName] = useState("");
+
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
@@ -108,17 +113,44 @@ export default function ChatsPage() {
     }
   }, [user]);
 
+  // WebSocket Listeners
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("message recieved", (newMessageRecieved: any) => {
-        if (!selectedChat || selectedChat._id !== newMessageRecieved.chat._id) {
-          fetchExistingChats();
-        } else {
-          setMessages(prev => [...prev, newMessageRecieved]);
-        }
+    if (!socket.current) return;
+
+    const handleMessageReceived = (newMessageRecieved: any) => {
+      // Re-fetch chat list if message doesn't belong to current active chat
+      if (!selectedChat || selectedChat._id !== newMessageRecieved.chat._id) {
+        fetchExistingChats();
+      } else {
+        // Prevent duplicate rendering if backend also sends double
+        setMessages(prev => {
+           if (prev.some(m => m._id === newMessageRecieved._id)) return prev;
+           return [...prev, newMessageRecieved];
+        });
+      }
+    };
+
+    const handleHubUpdate = (newHub: Chat) => {
+      setHubs(prev => {
+        if (prev.some(h => h._id === newHub._id)) return prev;
+        return [newHub, ...prev];
       });
-    }
-  });
+      setChats(prev => {
+        if (prev.some(c => c._id === newHub._id)) return prev;
+        return [newHub, ...prev];
+      });
+    };
+
+    socket.current.on("message recieved", handleMessageReceived);
+    socket.current.on("hub map update", handleHubUpdate);
+
+    return () => {
+      if (socket.current) {
+         socket.current.off("message recieved", handleMessageReceived);
+         socket.current.off("hub map update", handleHubUpdate);
+      }
+    };
+  }, [selectedChat]);
 
   useEffect(() => {
     if (selectedChat) {
@@ -266,9 +298,13 @@ export default function ChatsPage() {
       return;
     }
 
+    // Use provided name or default to a sector name if empty
+    const finalName = name.trim() || `Sector [${coords[0].toFixed(2)}, ${coords[1].toFixed(2)}]`;
+
     try {
       const instanceCount = hubs.filter(h => h.coordinates && h.coordinates[0] === coords[0]).length + 1;
-      const hubName = instanceCount > 1 ? `${name} Hub #${instanceCount}` : `${name} Hub`;
+      const hubName = instanceCount > 1 ? `${finalName} Hub #${instanceCount}` : `${finalName} Hub`;
+
       
       toast.loading(`Initializing ${hubName}...`);
       const response = await fetchApi('/chat/group', {
@@ -293,6 +329,11 @@ export default function ChatsPage() {
       setChats(prev => [newHub, ...prev]);
       setHubs(prev => [newHub, ...prev]);
       setSelectedChat(newHub);
+      
+      // Broadcast the new tactical node to the global matrix
+      if (socket.current) {
+        socket.current.emit("hub created", newHub);
+      }
     } catch (err) {
       toast.error("Cluster initialization failed.");
     }
@@ -512,7 +553,12 @@ export default function ChatsPage() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`max-w-[70%] space-y-2 ${isMine ? 'items-end' : 'items-start'}`}>
+                    <div className={`max-w-[70%] space-y-1 ${isMine ? 'items-end' : 'items-start'}`}>
+                      {!isMine && selectedChat.isGroupChat && (
+                        <span className="text-[10px] font-black text-emerald-600/80 uppercase tracking-widest block px-4 mb-1">
+                          {m.sender?.name || "Explorer"}
+                        </span>
+                      )}
                       <div className={`p-5 rounded-[2.5rem] text-sm font-medium shadow-xl border ${
                         isMine 
                           ? 'bg-slate-950 text-white rounded-tr-none border-slate-800 shadow-slate-900/10' 
@@ -520,7 +566,7 @@ export default function ChatsPage() {
                       }`}>
                         {m.content}
                       </div>
-                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest block px-2">
+                      <span className={`text-[9px] font-black text-slate-300 uppercase tracking-widest block px-4 mt-2 ${isMine ? 'text-right' : 'text-left'}`}>
                         {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
@@ -563,7 +609,21 @@ export default function ChatsPage() {
             {/* Tactical Map Integration */}
             <div className="absolute inset-0 z-0">
                {mounted && (
-                 <SafetyMap hubs={hubs} onJoin={joinHub} onCreateHub={createHub} />
+                 <SafetyMap 
+                   hubs={hubs} 
+                   onJoin={joinHub} 
+                   onCreateHub={(name, coords) => {
+                     // Intercept the click to show our custom modal
+                     if (name.startsWith('Sector')) {
+                       setNewHubCoords(coords);
+                       setShowHubModal(true);
+                       setNewHubName(""); // Reset
+                     } else {
+                       // Pre-defined beacons bypass the text input modal
+                       createHub(name, coords);
+                     }
+                   }} 
+                 />
                )}
             </div>
 
@@ -577,6 +637,61 @@ export default function ChatsPage() {
           </div>
         )}
       </div>
+
+      {/* Cluster Initialization Modal */}
+      {showHubModal && newHubCoords && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-[2rem] shadow-2xl p-8 max-w-md w-full border border-slate-100"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
+                <Hash size={20} className="stroke-[2.5px]" />
+              </div>
+              <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Initialize Cluster</h3>
+            </div>
+            
+            <p className="text-xs font-medium text-slate-500 mb-6 leading-relaxed">
+              Designating a new tactical node at coordinates [{newHubCoords[0].toFixed(2)}, {newHubCoords[1].toFixed(2)}]. Assign a clear, identifiable name for your network.
+            </p>
+
+            <input 
+              type="text" 
+              autoFocus
+              value={newHubName}
+              onChange={(e) => setNewHubName(e.target.value)}
+              placeholder="e.g. Basecamp Alpha"
+              className="w-full px-5 py-4 bg-slate-50 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition-all text-sm font-bold text-slate-800 placeholder:text-slate-400 mb-6"
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  setShowHubModal(false);
+                  createHub(newHubName, newHubCoords);
+                }
+              }}
+            />
+
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setShowHubModal(false)}
+                className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                Abort
+              </button>
+              <button 
+                onClick={() => {
+                  setShowHubModal(false);
+                  createHub(newHubName, newHubCoords);
+                }}
+                className="flex-1 py-3 bg-emerald-600 text-white font-black text-xs uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-0.5 transition-all"
+              >
+                Establish Link
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {

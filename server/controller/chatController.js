@@ -71,6 +71,7 @@ exports.createGroupChat = async (req, res) => {
   }
 
   var users = JSON.parse(req.body.users);
+  const { coordinates, name } = req.body;
 
   if (users.length < 1) {
     return res
@@ -78,15 +79,42 @@ exports.createGroupChat = async (req, res) => {
       .send("At least one user is required to form a network cluster");
   }
 
+  // Check if a hub already exists at these coordinates and is not full
+  if (coordinates && Array.isArray(coordinates)) {
+    try {
+      const existingHub = await Chat.findOne({
+        isGroupChat: true,
+        coordinates: { $all: coordinates },
+        $expr: { $lt: [{ $size: "$users" }, 20] }
+      });
+
+      if (existingHub) {
+        // If already a member, just return it
+        if (!existingHub.users.includes(req.user.id)) {
+          existingHub.users.push(req.user.id);
+          await existingHub.save();
+        }
+        
+        const fullHub = await Chat.findOne({ _id: existingHub._id })
+          .populate("users", "-password")
+          .populate("groupAdmin", "-password");
+          
+        return res.status(200).json(fullHub);
+      }
+    } catch (err) {
+      console.error("Cluster lookup error:", err);
+    }
+  }
+
   users.push(req.user.id);
 
   try {
     const groupChat = await Chat.create({
-      chatName: req.body.name,
+      chatName: name,
       users: users,
       isGroupChat: true,
       groupAdmin: req.user.id,
-      coordinates: req.body.coordinates,
+      coordinates: coordinates,
     });
 
     const fullGroupChat = await Chat.findOne({ _id: groupChat._id })

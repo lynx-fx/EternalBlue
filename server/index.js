@@ -99,6 +99,12 @@ mongoose
         });
       });
 
+      // Broadcast global map updates (creating new hubs)
+      socket.on("hub created", (newHub) => {
+        // Broadcast to EVERYONE except the sender
+        socket.broadcast.emit("hub map update", newHub);
+      });
+
       socket.off("setup", (userData) => {
         console.log("USER DISCONNECTED");
         if(userData) socket.leave(userData._id);
