@@ -231,7 +231,7 @@ export default function ExplorePage() {
                  <p className="text-emerald-700 text-xs font-bold uppercase tracking-widest">Current priority regions</p>
               </div>
               <div className="space-y-4">
-                 {['Thailand', 'France', 'Italy', 'Vietnam'].map((c) => (
+                 {['Nepal', 'Thailand', 'France', 'Vietnam'].map((c) => (
                    <div 
                     key={c}
                     onClick={() => {

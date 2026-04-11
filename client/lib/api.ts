@@ -25,18 +25,26 @@ export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
       data = { message: await response.text() };
     }
 
-    if (!response.ok) {
-      throw new Error(data.message || `Error: ${response.status} ${response.statusText}`);
-    }
-
-    return data;
+    // Return data even if not ok, but add status info
+    return {
+      ...data,
+      $ok: response.ok,
+      $status: response.status
+    };
   } catch (error: any) {
-    // Check if it's a network error (failed to fetch)
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
-      throw new Error('Unable to connect to the server. Please check your internet connection or try again later.');
+      return {
+        success: false,
+        message: 'Unable to connect to the server. Please check your connection.',
+        $ok: false,
+        $status: 0
+      };
     }
-    
-    // Re-throw if it's already a handled error (from the !response.ok block)
-    throw error;
+    return {
+      success: false,
+      message: error.message || 'An unexpected error occurred.',
+      $ok: false,
+      $status: 500
+    };
   }
 };
