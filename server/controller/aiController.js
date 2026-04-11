@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 exports.chatWithAI = async (req, res) => {
   try {
-    const { prompt } = req.body;
+    const { prompt, history } = req.body;
     if (!prompt) {
       return res.status(400).json({ success: false, message: "Prompt is required" });
     }
@@ -10,10 +10,14 @@ exports.chatWithAI = async (req, res) => {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API);
     const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash",
-      systemInstruction: "You are an expert travel planner and itinerary assistant. Help users plan trips, offer destination advice, give practical travel tips, and create structured, detailed itineraries. Be friendly, organized, and focus on travel-related topics."
+      systemInstruction: "You are an expert travel planner and itinerary assistant. Help users plan trips, offer destination advice, give practical travel tips, and create structured, detailed itineraries. Be friendly, organized, and focus on travel-related topics. Use markdown for formatting lists, bold text, and headers."
     });
 
-    const result = await model.generateContent(prompt);
+    const chat = model.startChat({
+      history: history || [],
+    });
+
+    const result = await chat.sendMessage(prompt);
     const response = await result.response;
     const text = response.text();
 

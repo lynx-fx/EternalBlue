@@ -61,7 +61,7 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row gap-5 items-center">
                 <Link 
-                  href="/chatbot" 
+                  href="/dashboard/chatbot" 
                   className="w-full sm:w-auto px-10 py-5 bg-slate-950 text-white rounded-full font-bold flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all shadow-2xl shadow-slate-200 group relative overflow-hidden"
                 >
                   <span className="relative z-10">Start Your Adventure</span>

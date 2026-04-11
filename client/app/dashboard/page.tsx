@@ -39,7 +39,7 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-black text-slate-950 uppercase tracking-tighter mb-2">
+          <h1 className="text-4xl font-bold text-slate-950 uppercase tracking-tighter mb-2">
             Welcome back, {user?.name.split(' ')[0] || 'Voyager'}
           </h1>
           <p className="text-slate-500 font-medium">Your global safety matrix is synchronized and ready.</p>
@@ -50,7 +50,7 @@ export default function DashboardPage() {
                 <Calendar size={18} />
              </div>
              <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status Date</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Status Date</p>
                 <p className="text-sm font-bold text-slate-900">April 11, 2026</p>
              </div>
           </div>
@@ -66,8 +66,8 @@ export default function DashboardPage() {
               <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform`}>
                 <Icon size={24} strokeWidth={2.5} />
               </div>
-              <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-              <h3 className="text-3xl font-black text-slate-950">{stat.value}</h3>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{stat.label}</p>
+              <h3 className="text-3xl font-bold text-slate-950">{stat.value}</h3>
             </div>
           );
         })}
@@ -77,11 +77,11 @@ export default function DashboardPage() {
         {/* Recent Advisory */}
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-xl font-black text-slate-950 uppercase tracking-tight flex items-center gap-3">
+            <h3 className="text-xl font-bold text-slate-950 uppercase tracking-tight flex items-center gap-3">
               <ShieldAlert className="text-emerald-600" size={24} />
               Priority Intelligence
             </h3>
-            <button className="text-[11px] font-black text-emerald-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
+            <button className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
               View All Alerts
             </button>
           </div>
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                         <MapPin size={20} />
                      </div>
                      <div>
-                        <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-1">{alert.title}</h4>
+                        <h4 className="text-sm font-bold text-slate-900 uppercase tracking-tight mb-1">{alert.title}</h4>
                         <div className="flex items-center gap-4">
                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{alert.location}</p>
                            <p className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest">● {alert.status} Priority</p>
@@ -127,9 +127,9 @@ export default function DashboardPage() {
                 <div className="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-emerald-900/20">
                    <TrendingUp size={24} strokeWidth={2.5} />
                 </div>
-                <h3 className="text-2xl font-black uppercase tracking-tighter mb-4 leading-tight">Plan Your Next Voyage</h3>
+                <h3 className="text-2xl font-bold uppercase tracking-tighter mb-4 leading-tight">Plan Your Next Voyage</h3>
                 <p className="text-slate-400 text-sm font-medium mb-8">AI-driven trip modeling based on your profile and global data.</p>
-                <button className="w-full py-4 bg-white text-slate-950 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-emerald-50 transition-all">
+                <button className="w-full py-4 bg-white text-slate-950 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-emerald-50 transition-all">
                   New Model
                 </button>
              </div>
@@ -138,10 +138,10 @@ export default function DashboardPage() {
           <div className="bg-white border border-slate-100 rounded-[3rem] p-8 space-y-6 shadow-sm">
              <div className="flex items-center gap-3">
                 <Clock size={16} className="text-emerald-600" />
-                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em]">Next Planned Sync</h4>
+                <h4 className="text-[11px] font-bold text-slate-900 uppercase tracking-[0.2em]">Next Planned Sync</h4>
              </div>
              <div>
-                <p className="text-2xl font-black text-slate-950 uppercase tracking-tighter">In 14 Hours</p>
+                <p className="text-2xl font-bold text-slate-950 uppercase tracking-tighter">In 14 Hours</p>
                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">UTC Synchronization</p>
              </div>
              <div className="w-full h-2 bg-slate-50 rounded-full overflow-hidden">
