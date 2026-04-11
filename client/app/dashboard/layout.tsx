@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   Map,
-  Sparkles
+  Sparkles,
+  Users
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 
@@ -49,6 +50,7 @@ export default function DashboardLayout({
   const navItems = [
     { name: 'Overview', href: '/dashboard', icon: Home },
     { name: 'Advisory Chat', href: '/dashboard/chatbot', icon: MessageSquare },
+    { name: 'Social Matrix', href: '/dashboard/chats', icon: Users },
     { name: 'Explore', href: '/dashboard/explore', icon: Map },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];

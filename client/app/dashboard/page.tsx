@@ -15,23 +15,39 @@ import { fetchApi } from '@/lib/api';
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
+  const [scams, setScams] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const data = await fetchApi('/auth/get-me');
-        setUser(data.user);
+        const [userData, scamsData] = await Promise.all([
+          fetchApi('/auth/get-me'),
+          fetchApi('/scams')
+        ]);
+        
+        if (userData.success) setUser(userData.user);
+        if (scamsData.success) {
+          // Priority to high severity and limit to 3
+          const sortedScams = scamsData.scams
+            .sort((a: any, b: any) => (b.severity === 'High' ? 1 : -1))
+            .slice(0, 3);
+          setScams(sortedScams);
+        }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
-    getUser();
+    fetchData();
   }, []);
 
   const stats = [
-    { label: 'Active Alerts', value: '4', icon: ShieldAlert, color: 'text-amber-600', bg: 'bg-amber-100' },
+    { label: 'Active Alerts', value: scams.length.toString(), icon: ShieldAlert, color: 'text-amber-600', bg: 'bg-amber-100' },
     { label: 'Trips Planned', value: '12', icon: Plane, color: 'text-emerald-600', bg: 'bg-emerald-100' },
-    { label: 'Countries Sync', value: '194', icon: Globe, color: 'text-blue-600', bg: 'bg-blue-100' },
+    { label: 'Himalayan Sync', value: 'Active', icon: Globe, color: 'text-blue-600', bg: 'bg-blue-100' },
   ];
 
   return (
@@ -39,10 +55,10 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-bold text-slate-950 uppercase tracking-tighter mb-2">
+          <h1 className="text-4xl font-black text-slate-950 uppercase tracking-tighter mb-2">
             Welcome back, {user?.name.split(' ')[0] || 'Voyager'}
           </h1>
-          <p className="text-slate-500 font-medium">Your global safety matrix is synchronized and ready.</p>
+          <p className="text-slate-500 font-medium tracking-tight">Your global safety matrix is synchronized with Himalayan intelligence.</p>
         </div>
         <div className="flex gap-4">
           <div className="px-6 py-4 bg-white border border-slate-100 rounded-[2rem] shadow-sm flex items-center gap-4">
@@ -50,8 +66,8 @@ export default function DashboardPage() {
                 <Calendar size={18} />
              </div>
              <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Status Date</p>
-                <p className="text-sm font-bold text-slate-900">April 11, 2026</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status Date</p>
+                <p className="text-sm font-black text-slate-900">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
              </div>
           </div>
         </div>
@@ -63,11 +79,11 @@ export default function DashboardPage() {
           const Icon = stat.icon;
           return (
             <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all group">
-              <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform`}>
+              <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform`}>
                 <Icon size={24} strokeWidth={2.5} />
               </div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-              <h3 className="text-3xl font-bold text-slate-950">{stat.value}</h3>
+              <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{stat.label}</p>
+              <h3 className="text-3xl font-black text-slate-950 uppercase">{stat.value}</h3>
             </div>
           );
         })}
@@ -77,42 +93,53 @@ export default function DashboardPage() {
         {/* Recent Advisory */}
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-xl font-bold text-slate-950 uppercase tracking-tight flex items-center gap-3">
+            <h3 className="text-xl font-black text-slate-950 uppercase tracking-tight flex items-center gap-3">
               <ShieldAlert className="text-emerald-600" size={24} />
               Priority Intelligence
             </h3>
-            <button className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
-              View All Alerts
+            <button 
+              onClick={() => window.location.href = '/dashboard/explore'}
+              className="text-[11px] font-black text-emerald-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4"
+            >
+              Access Registry
             </button>
           </div>
           
           <div className="space-y-4">
-             {[
-               { title: 'Japan Visa Policy Revision', location: 'Japan', status: 'High', date: '2h ago' },
-               { title: 'Weather Advisory: Alpine Region', location: 'Switzerland', status: 'Moderate', date: '5h ago' },
-               { title: 'Local Transport Strike', location: 'France', status: 'Low', date: '1d ago' },
-             ].map((alert, i) => (
-               <div key={i} className="group bg-white p-6 rounded-[2rem] border border-slate-100 hover:border-emerald-100/50 hover:shadow-lg transition-all flex items-center justify-between cursor-pointer">
-                  <div className="flex items-center gap-6">
-                     <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors">
-                        <MapPin size={20} />
-                     </div>
-                     <div>
-                        <h4 className="text-sm font-bold text-slate-900 uppercase tracking-tight mb-1">{alert.title}</h4>
-                        <div className="flex items-center gap-4">
-                           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{alert.location}</p>
-                           <p className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest">● {alert.status} Priority</p>
-                        </div>
-                     </div>
-                  </div>
-                  <div className="flex items-center gap-6">
-                     <p className="text-[11px] font-bold text-slate-300 uppercase tracking-widest">{alert.date}</p>
-                     <div className="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center text-slate-300 group-hover:text-emerald-600 group-hover:border-emerald-100 transition-all">
-                        <ArrowRight size={18} />
-                     </div>
-                  </div>
+             {loading ? (
+               [1,2,3].map(i => <div key={i} className="h-24 bg-slate-50 rounded-[2rem] animate-pulse" />)
+             ) : scams.length > 0 ? (
+               scams.map((scam, i) => (
+                <div key={i} className="group bg-white p-6 rounded-[2rem] border border-slate-100 hover:border-emerald-100/50 hover:shadow-xl transition-all flex items-center justify-between cursor-pointer">
+                   <div className="flex items-center gap-6">
+                      <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors">
+                         <MapPin size={20} />
+                      </div>
+                      <div>
+                         <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-1">{scam.title}</h4>
+                         <div className="flex items-center gap-4">
+                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{scam.country}</p>
+                            <p className={`${scam.severity === 'High' ? 'text-red-500' : 'text-emerald-600'} text-[11px] font-black uppercase tracking-widest`}>
+                              ● {scam.severity} Risk
+                            </p>
+                         </div>
+                      </div>
+                   </div>
+                   <div className="flex items-center gap-6">
+                      <p className="text-[11px] font-black text-slate-300 uppercase tracking-widest">
+                        {new Date(scam.createdAt).toLocaleDateString()}
+                      </p>
+                      <div className="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center text-slate-300 group-hover:text-emerald-600 group-hover:border-emerald-100 transition-all">
+                         <ArrowRight size={18} />
+                      </div>
+                   </div>
+                </div>
+              ))
+             ) : (
+               <div className="bg-slate-50 border-2 border-dashed border-slate-100 p-12 rounded-[2.5rem] text-center">
+                  <p className="text-sm font-black text-slate-400 uppercase tracking-widest">No Priority Intelligence Found</p>
                </div>
-             ))}
+             )}
           </div>
         </div>
 
