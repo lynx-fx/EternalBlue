@@ -56,6 +56,7 @@ export default function DashboardLayout({
     { name: 'Advisory Chat', href: '/dashboard/chatbot', icon: MessageSquare },
     { name: 'Safety Tips', href: '/dashboard/advisory', icon: ShieldCheck },
     { name: 'Social Matrix', href: '/dashboard/chats', icon: Users },
+    { name: 'Discovery', href: '/dashboard/recommendations', icon: Compass },
     { name: 'Scam Registry', href: '/dashboard/explore', icon: Map },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
@@ -134,8 +135,7 @@ export default function DashboardLayout({
                       alt={user.name} 
                       className="w-full h-full object-cover" 
                     />
-                  ) : (
-                    user.name.charAt(0).toUpperCase()
+                  ) : (user.name.charAt(0).toUpperCase()
                   )}
                 </div>
                 <div className="flex-1 overflow-hidden">

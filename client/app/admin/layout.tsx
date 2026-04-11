@@ -55,6 +55,7 @@ export default function DashboardLayout({
     { name: 'Overview', href: '/admin/dashboard', icon: ShieldCheck },
     { name: 'User Control', href: '/admin/dashboard/users', icon: Users },
     { name: 'Scam Directives', href: '/admin/dashboard/scams', icon: AlertOctagon },
+    { name: 'Voyager Discovery', href: '/admin/dashboard/recommendations', icon: Compass },
     { name: 'Settings', href: '/admin/dashboard/settings', icon: Settings },
   ];
 

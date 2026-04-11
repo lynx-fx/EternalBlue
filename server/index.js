@@ -53,6 +53,7 @@ app.use("/api/chat", chatRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/scams", scamRouter);
+app.use("/api/recommendations", require("./route/recommendationRouter"));
 
 mongoose
   .connect(mongoUri)
