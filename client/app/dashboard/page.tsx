@@ -12,28 +12,34 @@ import {
   Globe
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [scams, setScams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [discoveryCount, setDiscoveryCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [userRes, scamsRes] = await Promise.all([
+        const [userRes, scamsRes, recsRes] = await Promise.all([
           fetchApi('/auth/get-me'),
-          fetchApi('/scams')
+          fetchApi('/scams'),
+          fetchApi('/recommendations')
         ]);
         
         if (userRes.$ok) setUser(userRes.data.user);
         if (scamsRes.$ok) {
-          // Priority to high severity and limit to 3
           const sortedScams = (scamsRes.data.scams || [])
             .sort((a: any, b: any) => (b.severity === 'High' ? 1 : -1))
             .slice(0, 3);
           setScams(sortedScams);
+        }
+        if (recsRes.$ok) {
+          setDiscoveryCount(recsRes.data.data?.length || 0);
         }
       } catch (error) {
         console.error(error);
@@ -46,8 +52,8 @@ export default function DashboardPage() {
 
   const stats = [
     { label: 'Active Alerts', value: scams.length.toString(), icon: ShieldAlert, color: 'text-amber-600', bg: 'bg-amber-100' },
-    { label: 'Trips Planned', value: '12', icon: Plane, color: 'text-emerald-600', bg: 'bg-emerald-100' },
-    { label: 'Himalayan Sync', value: 'Active', icon: Globe, color: 'text-blue-600', bg: 'bg-blue-100' },
+    { label: 'Global Discoveries', value: discoveryCount.toString(), icon: Globe, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+    { label: 'Himalayan Sync', value: 'Active', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-100' },
   ];
 
   return (
@@ -156,7 +162,10 @@ export default function DashboardPage() {
                 </div>
                 <h3 className="text-2xl font-bold uppercase tracking-tighter mb-4 leading-tight">Plan Your Next Voyage</h3>
                 <p className="text-slate-400 text-sm font-medium mb-8">AI-driven trip modeling based on your profile and global data.</p>
-                <button className="w-full py-4 bg-white text-slate-950 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-emerald-50 transition-all">
+                <button 
+                  onClick={() => router.push('/dashboard/chatbot')}
+                  className="w-full py-4 bg-white text-slate-950 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-emerald-50 transition-all active:scale-95"
+                >
                   New Model
                 </button>
              </div>

@@ -14,7 +14,7 @@ import { fetchApi } from '@/lib/api';
 import { toast } from 'sonner';
 import { emergencyContacts } from '@/constant/contacts';
 
-const PREDEFINED_COUNTRIES = emergencyContacts.SAARC_emergency_contacts.slice(0, 5).map(c => c.country);
+const PREDEFINED_COUNTRIES = emergencyContacts.SAARC_emergency_contacts.slice(0, 6).map(c => c.country);
 
 export default function AdvisoryPage() {
   const [recommendations, setRecommendations] = useState<any[]>([]);
@@ -73,6 +73,8 @@ export default function AdvisoryPage() {
   const travelTips = [
     { _id: 'static-01', title: 'Sacred Direction', description: 'Always pass Mani stones (prayer walls) and Stupas in a clockwise direction. Never disturb these markers.' },
     { _id: 'static-02', title: 'Permission to Capture', description: 'Ask for authorization before photographing people or sacred interiors of monasteries. Many rituals are private.' },
+    { _id: 'static-03', title: 'Ecological Footprint', description: 'Take only pictures, leave only footprints, kill only time. Respect the fragile alpine biodiversity.' },
+    { _id: 'static-04', title: 'Waste Management', description: 'Carry out what you carry in. Dispose of all non-biodegradable waste at designated checkpoint incinerators only.' },
     ...dynamicTips
   ];
 
