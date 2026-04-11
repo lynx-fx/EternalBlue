@@ -104,17 +104,19 @@ export default function DashboardChatbot() {
       }));
 
     try {
-      const data = await fetchApi('/ai/chat', {
+      const response = await fetchApi('/ai/chat', {
         method: 'POST',
         body: JSON.stringify({ 
           prompt: currentInput,
           history: history 
         }),
       });
+      
+      if (!response.$ok) throw new Error(response.message || "AI failed to respond");
 
       const aiMsg: Message = {
         id: Date.now().toString(),
-        text: data.text,
+        text: response.data.text,
         sender: "ai",
         timestamp: new Date(),
         isStreaming: true // Mark as new for animation

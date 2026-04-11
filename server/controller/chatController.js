@@ -86,6 +86,7 @@ exports.createGroupChat = async (req, res) => {
       users: users,
       isGroupChat: true,
       groupAdmin: req.user.id,
+      coordinates: req.body.coordinates,
     });
 
     const fullGroupChat = await Chat.findOne({ _id: groupChat._id })

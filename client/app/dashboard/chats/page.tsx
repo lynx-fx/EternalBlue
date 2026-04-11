@@ -137,8 +137,8 @@ export default function ChatsPage() {
 
   const fetchUserData = async () => {
     try {
-      const data = await fetchApi('/auth/get-me');
-      if (data.success) setUser(data.user);
+      const response = await fetchApi('/auth/get-me');
+      if (response.$ok) setUser(response.data.user);
     } catch (err) {
       console.error(err);
     }
@@ -147,8 +147,8 @@ export default function ChatsPage() {
   const fetchExistingChats = async () => {
     setLoading(true);
     try {
-      const data = await fetchApi('/chat');
-      setChats(data);
+      const response = await fetchApi('/chat');
+      setChats(response.data || []);
     } catch (err) {
       toast.error("Cloud connection failed.");
     } finally {
@@ -159,8 +159,8 @@ export default function ChatsPage() {
   const fetchHubs = async () => {
     try {
       // For now, hubs are just group chats with coordinates
-      const data = await fetchApi('/chat');
-      const filteredHubs = data.filter((c: Chat) => c.isGroupChat && c.coordinates);
+      const response = await fetchApi('/chat');
+      const filteredHubs = (response.data || []).filter((c: Chat) => c.isGroupChat && c.coordinates);
       setHubs(filteredHubs);
     } catch (err) {
       console.error(err);
@@ -170,8 +170,8 @@ export default function ChatsPage() {
   const fetchMessages = async () => {
     if (!selectedChat) return;
     try {
-      const data = await fetchApi(`/message/${selectedChat._id}`);
-      setMessages(data);
+      const response = await fetchApi(`/message/${selectedChat._id}`);
+      setMessages(response.data || []);
     } catch (err) {
       toast.error("Failed to sync transmission.");
     }
@@ -185,8 +185,8 @@ export default function ChatsPage() {
     }
     setIsSearching(true);
     try {
-      const data = await fetchApi(`/auth/search?search=${query}`);
-      if (data.success) setSearchResults(data.users);
+      const response = await fetchApi(`/auth/search?search=${query}`);
+      if (response.$ok) setSearchResults(response.data.users);
     } catch (err) {
       console.error(err);
     } finally {
@@ -196,15 +196,18 @@ export default function ChatsPage() {
 
   const accessChat = async (userId: string) => {
     try {
-      const data = await fetchApi('/chat', {
+      const response = await fetchApi('/chat', {
         method: 'POST',
         body: JSON.stringify({ userId }),
       });
       
-      const chatExists = chats.find(c => c._id === data._id);
-      if (!chatExists) setChats([data, ...chats]);
+      if (!response.$ok) throw new Error("Link failed");
+
+      const chatData = response.data;
+      const chatExists = chats.find(c => c._id === chatData._id);
+      if (!chatExists) setChats([chatData, ...chats]);
       
-      setSelectedChat(data);
+      setSelectedChat(chatData);
       setSearchQuery("");
       setSearchResults([]);
     } catch (err) {
@@ -221,7 +224,7 @@ export default function ChatsPage() {
 
     try {
       toast.loading(`Establishing link to ${hub.chatName}...`);
-      const data = await fetchApi('/chat/groupadd', {
+      const response = await fetchApi('/chat/groupadd', {
         method: 'PUT',
         body: JSON.stringify({
           chatId: hub._id,
@@ -229,12 +232,47 @@ export default function ChatsPage() {
         }),
       });
       toast.dismiss();
+      
+      if (!response.$ok) {
+        toast.error(response.message || "Hub entry denied.");
+        return;
+      }
+
       toast.success(`Successfully joined ${hub.chatName}`);
       
       fetchExistingChats();
-      setSelectedChat(data);
+      setSelectedChat(response.data);
     } catch (err) {
       toast.error("Hub entry denied.");
+    }
+  };
+
+  const createHub = async (name: string, coords: [number, number]) => {
+    try {
+      toast.loading(`Initializing cluster at ${name}...`);
+      const response = await fetchApi('/chat/group', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: `${name} Hub`,
+          users: JSON.stringify([user?._id]),
+          coordinates: coords
+        }),
+      });
+      
+      if (!response.$ok) {
+        toast.dismiss();
+        toast.error(response.data.message || "Failed to initialize cluster.");
+        return;
+      }
+
+      toast.dismiss();
+      toast.success(`Cluster ${name} initialized.`);
+      
+      setChats(prev => [response.data, ...prev]);
+      setSelectedChat(response.data);
+      fetchHubs();
+    } catch (err) {
+      toast.error("Cluster initialization failed.");
     }
   };
 
@@ -242,7 +280,7 @@ export default function ChatsPage() {
     if (!newMessage.trim() || !selectedChat) return;
     
     try {
-      const data = await fetchApi('/message', {
+      const response = await fetchApi('/message', {
         method: 'POST',
         body: JSON.stringify({
           content: newMessage,
@@ -250,9 +288,11 @@ export default function ChatsPage() {
         }),
       });
       
-      socket.current.emit("new message", data);
-      setMessages([...messages, data]);
-      setNewMessage("");
+      if (response.$ok) {
+        socket.current.emit("new message", response.data);
+        setMessages([...messages, response.data]);
+        setNewMessage("");
+      }
     } catch (err) {
       toast.error("Transmission failed.");
     }
@@ -473,52 +513,21 @@ export default function ChatsPage() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col relative h-full">
+          <div className="flex-1 flex flex-col relative h-full bg-slate-50">
             {/* Tactical Map Integration */}
-            <div className="absolute inset-0 z-0 text-slate-900">
+            <div className="absolute inset-0 z-0">
                {mounted && (
-                 <SafetyMap hubs={hubs} onJoin={joinHub} />
+                 <SafetyMap hubs={hubs} onJoin={joinHub} onCreateHub={createHub} />
                )}
             </div>
 
-            {/* Overlay UI */}
-             <div className="absolute inset-0 pointer-events-none z-10 p-12 flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                   <div className="bg-white/80 backdrop-blur-xl p-6 rounded-[2.5rem] border border-white shadow-2xl shadow-emerald-900/10 pointer-events-auto max-w-sm">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center text-white">
-                          <Navigation size={14} />
-                        </div>
-                        <h2 className="text-sm font-black text-slate-950 uppercase tracking-widest">Tactical Hub Overlay</h2>
-                      </div>
-                      <p className="text-xs font-medium text-slate-500 leading-relaxed">
-                        Identify active traveler clusters on the map. Click a regional safety hub to join the high-fidelity communication matrix.
-                      </p>
-                   </div>
-                   
-                   <div className="bg-slate-950 text-white p-6 rounded-[2.5rem] border border-slate-800 shadow-2xl pointer-events-auto flex items-center gap-6">
-                      <div className="text-right">
-                         <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest leading-none">Global Sync</p>
-                         <p className="text-lg font-black tracking-tighter">VOYAGE-S4</p>
-                      </div>
-                      <div className="w-px h-8 bg-slate-800" />
-                      <div className="flex -space-x-3">
-                         {[1,2,3].map(i => (
-                           <div key={i} className="w-10 h-10 rounded-full bg-slate-800 border-2 border-slate-950 flex items-center justify-center text-[10px] font-black font-mono">
-                             U0{i}
-                           </div>
-                         ))}
-                      </div>
-                   </div>
-                </div>
-
-                <div className="flex justify-center">
-                   <div className="bg-white/90 backdrop-blur-md px-8 py-4 rounded-full border border-emerald-100 shadow-xl pointer-events-auto flex items-center gap-4 animate-bounce">
-                      <MapPin size={16} className="text-emerald-600" />
-                      <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em]">Select a Cluster to Enter the Net</span>
-                   </div>
-                </div>
-             </div>
+            {/* Subtle Map Controls / Status */}
+            <div className="absolute top-8 left-8 z-10 pointer-events-none">
+              <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-100 shadow-xl flex items-center gap-3 pointer-events-auto">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none">Global Hub Matrix Active</span>
+              </div>
+            </div>
           </div>
         )}
       </div>

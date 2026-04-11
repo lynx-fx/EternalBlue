@@ -24,13 +24,13 @@ export default function LoginPage() {
         body: JSON.stringify({ code }),
       });
       
-      if (!data.$ok) {
-        toast.error(data.message || 'Google Authentication failed');
+      if (!response.$ok) {
+        toast.error(response.data.message || 'Google Authentication failed');
         return;
       }
 
-      localStorage.setItem('token', data.token);
-      toast.success(data.message || 'Access granted. Welcome Back.');
+      localStorage.setItem('token', response.data.token);
+      toast.success(response.data.message || 'Access granted. Welcome Back.');
       router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Google Authentication failed');
@@ -50,17 +50,17 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const data = await fetchApi('/auth/login', {
+      const response = await fetchApi('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
 
-      if (!data.$ok) {
-        toast.error(data.message || 'Authentication failed');
+      if (!response.$ok) {
+        toast.error(response.data.message || 'Authentication failed');
         return;
       }
 
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('token', response.data.token);
       toast.success('Access granted. Welcome Back.');
       router.push('/dashboard');
     } catch (error: any) {

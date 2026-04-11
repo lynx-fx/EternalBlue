@@ -36,9 +36,9 @@ export default function ExplorePage() {
       const endpoint = country 
         ? `/scams/country/${country}` 
         : '/scams';
-      const data = await fetchApi(endpoint);
-      if (data.success) {
-        setScams(data.scams);
+      const response = await fetchApi(endpoint);
+      if (response.$ok) {
+        setScams(response.data.scams || []);
       }
     } catch (error) {
       console.error('Error fetching scams:', error);
