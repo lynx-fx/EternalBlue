@@ -43,36 +43,28 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Banner & Search */}
-          <div className="relative">
-            <div className="w-full h-[500px] relative rounded-[2.5rem] overflow-hidden bg-slate-200">
-              <Image 
-                src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop" 
-                alt="Mountains landscape" 
-                fill 
-                className="object-cover hover:scale-105 transition-transform duration-[10s]" 
-                priority
-              />
-            </div>
-            
-            {/* Search Bar Container */}
-            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[95%] max-w-4xl bg-white rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,0,0,0.06)] p-3 flex items-center justify-between">
-              <div className="flex items-center flex-1 divide-x divide-slate-100/80">
-                <div className="px-8 flex-1">
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Location</p>
-                  <p className="text-sm font-semibold text-slate-800">Rinjani, Indonesia</p>
-                </div>
-                <div className="px-8 flex-1">
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Check In</p>
-                  <p className="text-sm font-semibold text-slate-800">27. January 2025</p>
-                </div>
-                <div className="px-8 flex-1">
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Check Out</p>
-                  <p className="text-sm font-semibold text-slate-800">30. January 2025</p>
-                </div>
-                <div className="px-8 flex-1">
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">People</p>
-                  <p className="text-sm font-semibold text-slate-800">4 People, 1 Child</p>
+              <div className="flex flex-col sm:flex-row gap-5 items-center">
+                <Link 
+                  href="/dashboard/chatbot" 
+                  className="w-full sm:w-auto px-10 py-5 bg-slate-950 text-white rounded-full font-bold flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all shadow-2xl shadow-slate-200 group relative overflow-hidden"
+                >
+                  <span className="relative z-10">Start Your Adventure</span>
+                  <ArrowRight size={20} className="relative z-10 group-hover:translate-x-1 transition-transform" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+                
+                <div className="px-6 py-3 border border-slate-200 rounded-full flex items-center gap-4 bg-white/40 backdrop-blur-md">
+                  <div className="flex -space-x-3">
+                    {[1,2,3].map(i => (
+                      <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 overflow-hidden shadow-sm">
+                        <img src={`https://i.pravatar.cc/100?img=${i+20}`} alt="user" className="w-full h-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-[12px] font-bold text-slate-600 flex items-center gap-1.5">
+                    <Star size={12} className="text-amber-400 fill-amber-400" />
+                    4.9/5 from 2k+ explorers
+                  </div>
                 </div>
               </div>
               <button className="w-16 h-16 bg-[#1C3E43] rounded-full flex items-center justify-center text-white hover:bg-[#122b2e] transition-colors shrink-0 shadow-lg shadow-[#1C3E43]/30">
