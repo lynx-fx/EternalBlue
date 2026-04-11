@@ -12,6 +12,7 @@ import {
   Hotel, 
   Trees, 
   Image as ImageIcon,
+  AlertTriangle,
   DollarSign,
   AlertCircle,
   CheckCircle2
@@ -178,22 +179,30 @@ export default function AdminRecommendations() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Classification</label>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-3 gap-3">
                       <button 
                         type="button"
                         onClick={() => setNewRec({...newRec, type: 'trip'})}
                         className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'trip' ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
                       >
-                        <Trees size={18} />
-                        <span className="text-[10px] font-black uppercase">Adventure Trip</span>
+                        <Trees size={16} />
+                        <span className="text-[9px] font-black uppercase">Expedition</span>
                       </button>
                       <button 
                         type="button"
                         onClick={() => setNewRec({...newRec, type: 'hotel'})}
                         className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'hotel' ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
                       >
-                        <Hotel size={18} />
-                        <span className="text-[10px] font-black uppercase">Elite Stay</span>
+                        <Hotel size={16} />
+                        <span className="text-[9px] font-black uppercase">Safehouse</span>
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setNewRec({...newRec, type: 'tip'})}
+                        className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'tip' ? 'bg-amber-500 border-amber-500 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
+                      >
+                        <AlertTriangle size={16} />
+                        <span className="text-[9px] font-black uppercase">Travel Tip</span>
                       </button>
                     </div>
                   </div>

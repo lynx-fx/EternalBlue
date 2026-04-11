@@ -35,7 +35,7 @@ export default function SignupPage() {
       }
 
       localStorage.setItem('token', res.data.token);
-      toast.success(res.data.message || 'Access granted. Welcome to VoyageAI');
+      toast.success(res.data.message || 'Access granted. Welcome to Voyage');
       router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Google Authentication failed');
