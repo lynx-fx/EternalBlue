@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const authRouter = require("./route/authRouter");
 const chatRouter = require("./route/chatRouter");
 const messageRouter = require("./route/messageRouter");
+const aiRouter = require("./route/aiRouter");
 require("./job/cron");
 
 const frontend =
@@ -49,6 +50,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin", require("./route/adminRouter"));
 app.use("/api/chat", chatRouter);
 app.use("/api/message", messageRouter);
+app.use("/api/ai", aiRouter);
 
 mongoose
   .connect(mongoUri)
