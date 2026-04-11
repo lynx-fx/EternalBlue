@@ -26,7 +26,13 @@ export default function LoginPage() {
       
       localStorage.setItem('token', data.token);
       toast.success(data.message || 'Access granted. Welcome Back.');
-      router.push('/dashboard');
+      
+      const sessionRetriever = await fetchApi('/auth/get-me');
+      if (sessionRetriever.user.role === 'admin') {
+         router.push('/admin/dashboard');
+      } else {
+         router.push('/dashboard');
+      }
     } catch (error: any) {
       toast.error(error.message || 'Google Authentication failed');
     } finally {
@@ -52,7 +58,13 @@ export default function LoginPage() {
 
       localStorage.setItem('token', data.token);
       toast.success('Access granted. Welcome Back.');
-      router.push('/dashboard');
+
+      const sessionRetriever = await fetchApi('/auth/get-me');
+      if (sessionRetriever.user.role === 'admin') {
+         router.push('/admin/dashboard');
+      } else {
+         router.push('/dashboard');
+      }
     } catch (error: any) {
       toast.error(error.message || 'Authentication failed');
     } finally {

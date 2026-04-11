@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { fetchApi } from '@/lib/api';
-import { Users, Ban, CheckCircle } from 'lucide-react';
+import { Users, Ban, CheckCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminUsersPage() {
@@ -30,6 +30,17 @@ export default function AdminUsersPage() {
       loadData();
     } catch (e: any) {
       toast.error(e.message || 'Failed to change user status');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('WARNING: Erasing this user is irreversible. Proceed?')) return;
+    try {
+      await fetchApi(`/admin/users/${id}`, { method: 'DELETE' });
+      toast.success('Entity permanently erased');
+      loadData();
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to erase user entity');
     }
   };
 
@@ -90,12 +101,21 @@ export default function AdminUsersPage() {
                     </div>
                   </td>
                   <td className="px-8 py-4 text-right">
-                    <button 
-                      onClick={() => toggleBan(u._id)}
-                      className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] transition-colors ${u.isActive ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
-                    >
-                      {u.isActive ? 'Suspend Access' : 'Restore Access'}
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                       <button 
+                         onClick={() => toggleBan(u._id)}
+                         className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] transition-colors ${u.isActive ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+                       >
+                         {u.isActive ? 'Suspend Access' : 'Restore Access'}
+                       </button>
+                       <button 
+                         onClick={() => handleDelete(u._id)}
+                         className="p-2 rounded-xl bg-slate-50 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-colors"
+                         title="Erase Entity"
+                       >
+                         <Trash2 size={16} />
+                       </button>
+                    </div>
                   </td>
                 </tr>
               ))}

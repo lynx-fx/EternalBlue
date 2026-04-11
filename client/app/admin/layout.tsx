@@ -70,18 +70,16 @@ export default function DashboardLayout({
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-emerald-100 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static
+        fixed inset-y-0 left-0 z-40 w-72 bg-emerald-600 lg:rounded-tr-[3rem] lg:rounded-br-[3rem] transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static flex flex-col shadow-2xl shadow-emerald-600/20
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="h-full flex flex-col p-6">
-          <div className="flex items-center gap-3 mb-10 px-2">
-            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-100">
-              <Compass size={22} strokeWidth={2.5} />
-            </div>
-            <span className="font-display font-bold text-xl tracking-tight text-emerald-950 uppercase">VoyageAI</span>
+        <div className="h-full flex flex-col py-10">
+          <div className="pl-10 flex flex-col mb-12">
+            <span className="font-display font-black text-2xl tracking-widest text-white uppercase">VOYAGEAI</span>
+            <span className="font-bold text-[10px] tracking-[0.2em] text-emerald-100/70 uppercase mt-1">Command Center</span>
           </div>
 
-          <nav className="flex-1 space-y-2">
+          <nav className="flex-1 flex flex-col pl-6 space-y-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = pathname === item.href;
@@ -90,23 +88,36 @@ export default function DashboardLayout({
                   key={item.name}
                   href={item.href}
                   className={`
-                    flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-semibold transition-all group
+                    flex items-center gap-4 py-4 pl-6 relative transition-all duration-300 rounded-l-full group
                     ${active 
-                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200/50' 
-                      : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'}
+                      ? "bg-[#F8FDF9] text-emerald-700 z-10 shadow-sm" 
+                      : "text-emerald-50 hover:text-white hover:bg-white/10"
+                    }
                   `}
                 >
-                  <Icon size={20} className={active ? 'text-white' : 'group-hover:scale-110 transition-transform'} />
-                  {item.name}
+                  {/* Flawless Top Curve Injection */}
+                  <div className={`absolute -top-8 right-0 w-8 h-8 pointer-events-none transition-opacity duration-300 ${active ? 'opacity-100' : 'opacity-0'}`}>
+                     <div className="absolute inset-0 bg-[#F8FDF9]"></div>
+                     <div className="absolute inset-0 bg-emerald-600 rounded-br-[2rem]"></div>
+                  </div>
+                  
+                  {/* Flawless Bottom Curve Injection */}
+                  <div className={`absolute -bottom-8 right-0 w-8 h-8 pointer-events-none transition-opacity duration-300 ${active ? 'opacity-100' : 'opacity-0'}`}>
+                     <div className="absolute inset-0 bg-[#F8FDF9]"></div>
+                     <div className="absolute inset-0 bg-emerald-600 rounded-tr-[2rem]"></div>
+                  </div>
+
+                  <Icon size={20} className={`transition-colors duration-300 ${active ? 'text-emerald-600' : 'group-hover:scale-110'}`} />
+                  <span className="font-medium text-[15px] tracking-wide">{item.name}</span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="mt-auto space-y-4 pt-6 border-t border-slate-50">
+          <div className="mt-auto pt-6 border-t border-white/10">
             {user && (
-              <div className="flex items-center gap-3 px-2 py-3 bg-slate-50 rounded-2xl">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold overflow-hidden shadow-sm">
+              <div className="flex items-center gap-3 px-8 py-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold overflow-hidden shadow-sm">
                   {user.profileUrl ? (
                     <img src={user.profileUrl} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
@@ -114,20 +125,17 @@ export default function DashboardLayout({
                   )}
                 </div>
                 <div className="flex-1 overflow-hidden">
-                  <p className="text-xs font-display font-bold text-slate-900 truncate uppercase tracking-tighter">{user.name}</p>
-                  <div className="flex items-center gap-1">
-                    <ShieldCheck size={10} className="text-emerald-500" />
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{user.role}</p>
-                  </div>
+                  <p className="text-xs font-bold text-white truncate uppercase tracking-wide">{user.name}</p>
+                  <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest">{user.role}</p>
                 </div>
               </div>
             )}
             
             <button 
               onClick={handleLogout}
-              className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-50 transition-all group"
+              className="w-full flex items-center gap-4 px-8 py-4 text-sm font-bold text-white/70 hover:text-white hover:bg-white/5 transition-all group"
             >
-              <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
+              <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
               Logout
             </button>
           </div>
