@@ -93,6 +93,23 @@ exports.banUser = async (req, res) => {
     }
 };
 
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await adminService.deleteUser(id);
+        res.status(200).json({
+            success: true,
+            message: "User permanently erased from the network",
+        });
+    } catch (err) {
+        console.error(err);
+        if (err.status) {
+            return res.status(err.status).json({ success: false, message: err.message });
+        }
+        res.status(500).json({ success: false, message: "Error wiping user credentials" });
+    }
+};
+
 exports.removeImage = async (req, res) => {
     try {
         const { id } = req.params;
