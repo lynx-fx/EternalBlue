@@ -9,7 +9,7 @@ export default function Home() {
       {/* Fixed Navigation */}
       <div className="fixed top-0 inset-x-0 z-50 bg-[#F7F7F7]/80 backdrop-blur-md">
         <nav className="flex items-center justify-between px-6 py-4 md:px-10 max-w-[1400px] mx-auto">
-          <div className="font-semibold text-2xl tracking-tighter text-[#1C3E43]">VoyageAI</div>
+          <div className="font-semibold text-2xl tracking-tighter text-[#1C3E43]">Voyage</div>
           
           <div className="hidden md:flex items-center gap-10 bg-white px-8 py-3.5 rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] text-sm font-medium border border-slate-100/50">
             <Link href="#" className="text-slate-900">Discover</Link>

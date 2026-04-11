@@ -128,7 +128,7 @@ export default function DashboardChatbot() {
     setMessages([
       {
         id: "intro",
-        text: "Hello! I'm your VoyageAI Travel Assistant. I'm specially trained on Himalayan logistics and Nepal-specific travel intelligence. How can I help you plan your next secure expedition today?",
+        text: "Hello! I'm your Voyage Travel Assistant. I'm specially trained on Himalayan logistics and Nepal-specific travel intelligence. How can I help you plan your next secure expedition today?",
         sender: "ai",
         timestamp: new Date(),
       }
@@ -333,7 +333,7 @@ export default function DashboardChatbot() {
               </div>
             </div>
             <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-6">
-              Powered by VoyageAI Core • Verified Intelligence
+              Powered by Voyage Core • Verified Intelligence
             </p>
           </div>
         </div>
@@ -426,26 +426,7 @@ export default function DashboardChatbot() {
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-                <Shield size={20} strokeWidth={2.5} />
-              </div>
-              <h3 className="font-display font-bold text-slate-900 uppercase tracking-widest text-sm">Security Matrix</h3>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="bg-slate-50 rounded-3xl p-5 border border-slate-100/50">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-[10px] font-black text-slate-400 uppercase">Global Safety Index</span>
-                  <span className="text-emerald-600 font-black text-xs">9.4/10</span>
-                </div>
-                <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                  <div className="w-[94%] h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
           {/* Discoveries */}
           <div>
@@ -484,16 +465,7 @@ export default function DashboardChatbot() {
             </div>
           </div>
 
-          <div className="relative rounded-[2.5rem] overflow-hidden bg-slate-950 p-8 text-white shadow-2xl shadow-slate-950/20">
-            <div className="relative z-10">
-              <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-4">Voyage Pass</p>
-              <h4 className="text-xl font-black mb-6 leading-tight">Unlock Priority AI Insights</h4>
-              <button className="w-full py-4 bg-emerald-600 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-900/40">
-                Upgrade Now
-              </button>
-            </div>
-            <Plane className="absolute -bottom-4 -right-4 text-emerald-900/30 rotate-12" size={120} />
-          </div>
+
         </div>
       </aside>
 

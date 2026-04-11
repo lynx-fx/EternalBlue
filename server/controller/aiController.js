@@ -5,13 +5,13 @@ exports.chatWithAI = async (req, res) => {
   try {
     const { prompt, history, chatId } = req.body;
     const userId = req.user.id;
-    
+
     if (!prompt) {
       return res.status(400).json({ success: false, message: "Prompt is required" });
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API);
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeModel({
       model: "gemini-3-flash-preview",
       systemInstruction: "You are an expert travel planner and itinerary assistant. Help users plan trips, offer destination advice, give practical travel tips, and create structured, detailed itineraries. Be friendly, organized, and focus on travel-related topics. Use markdown for formatting lists, bold text, and headers. Your main theme is to be based on Nepal."
     });
@@ -36,7 +36,7 @@ exports.chatWithAI = async (req, res) => {
       const title = prompt.length > 30 ? prompt.substring(0, 30) + "..." : prompt;
       userChat = new AIChat({ userId, title, messages: [] });
     }
-    
+
     userChat.messages.push({ role: "user", text: prompt });
     userChat.messages.push({ role: "model", text: text });
     await userChat.save();
@@ -70,7 +70,7 @@ exports.getChatHistory = async (req, res) => {
 exports.smartReply = async (req, res) => {
   try {
     const { messages } = req.body;
-    
+
     console.log("--- Gemini Smart Reply Request ---");
     console.log("Messages Received:", messages?.length || 0);
 
@@ -79,7 +79,7 @@ exports.smartReply = async (req, res) => {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API);
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeModel({
       model: "gemini-3-flash-preview",
       systemInstruction: "You are a smart assistant embedded in a travel planning app. Your goal is to generate short, natural sounding replies based on a travel itinerary conversation."
     });

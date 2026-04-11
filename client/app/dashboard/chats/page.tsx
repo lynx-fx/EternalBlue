@@ -395,10 +395,10 @@ export default function ChatsPage() {
             <h2 className="text-2xl font-black text-slate-950 uppercase tracking-tighter">Global Net</h2>
             <button 
               onClick={() => setSelectedChat(null)}
-              className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 hover:bg-emerald-600 hover:text-white transition-all active:scale-95"
+              className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 hover:bg-emerald-600 hover:text-white transition-all active:scale-95 group"
               title="Return to Map"
             >
-               <Globe size={18} />
+               <Globe size={18} className="group-hover:rotate-[360deg] transition-transform duration-1000" />
             </button>
           </div>
 
@@ -512,16 +512,7 @@ export default function ChatsPage() {
 
         {selectedChat ? (
           <>
-            {/* Floating Return to Map Button (Desktop) */}
-            <div className="absolute top-6 left-6 z-20 hidden md:block">
-              <button 
-                onClick={() => setSelectedChat(null)}
-                className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-xl shadow-emerald-900/10 border border-emerald-50 hover:bg-emerald-600 hover:text-white transition-all active:scale-95 group"
-                title="Return to Map"
-              >
-                <Globe size={20} className="group-hover:rotate-[360deg] transition-transform duration-1000" />
-              </button>
-            </div>
+
 
             {/* Chat Header */}
             <div className="p-6 pl-20 border-b border-slate-100 bg-white/50 backdrop-blur-md flex items-center justify-between z-10">

@@ -11,6 +11,7 @@ const aiRouter = require("./route/aiRouter");
 const scamRouter = require("./route/scamRouter");
 const recommendationRouter = require("./route/recommendationRouter");
 const reportRouter = require("./route/reportRouter");
+const emergencyRouter = require("./route/emergencyRouter");
 require("./job/cron");
 
 const frontend =
@@ -56,6 +57,8 @@ app.use("/api/message", messageRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/scams", scamRouter);
 app.use("/api/recommendations", require("./route/recommendationRouter"));
+app.use("/api/emergency", emergencyRouter);
+app.use("/api/reports", reportRouter);
 
 mongoose
   .connect(mongoUri)
