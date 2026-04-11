@@ -12,7 +12,11 @@ export default function AdminScamsPage() {
   const loadData = async () => {
     try {
       const scamsRes = await fetchApi('/scams');
-      setScams(scamsRes.scams || []);
+      if (scamsRes.$ok) {
+        setScams(scamsRes.data.scams || []);
+      } else {
+        toast.error(scamsRes.data?.message || scamsRes.message || 'Failed to fetch directives');
+      }
     } catch (err: any) {
       toast.error(err.message || 'Failed to authenticate or fetch data.');
     } finally {
@@ -33,10 +37,14 @@ export default function AdminScamsPage() {
       // Fallback to Nepal if empty
       const payload = { ...newScam, country: newScam.country.trim() || 'Nepal' };
       
-      await fetchApi('/scams', { method: 'POST', body: JSON.stringify(payload) });
-      toast.success('Scam directive deployed globally');
-      setNewScam({ country: 'Nepal', title: '', description: '', severity: 'Medium' });
-      loadData();
+      const res = await fetchApi('/scams', { method: 'POST', body: JSON.stringify(payload) });
+      if (res.$ok) {
+        toast.success('Scam directive deployed globally');
+        setNewScam({ country: 'Nepal', title: '', description: '', severity: 'Medium' });
+        loadData();
+      } else {
+        toast.error(res.data?.message || res.message || 'Failed to authorize scam directive deployment');
+      }
     } catch (e: any) {
       toast.error(e.message || 'Failed to authorize scam directive deployment');
     }
@@ -45,9 +53,13 @@ export default function AdminScamsPage() {
   const handleDeleteScam = async (id: string) => {
     if (!window.confirm('Erase this directive from global intelligence?')) return;
     try {
-      await fetchApi(`/scams/${id}`, { method: 'DELETE' });
-      toast.success('Scam directive erased from system');
-      loadData();
+      const res = await fetchApi(`/scams/${id}`, { method: 'DELETE' });
+      if (res.$ok) {
+        toast.success('Scam directive erased from system');
+        loadData();
+      } else {
+        toast.error(res.data?.message || res.message || 'Failed to erase scam directive');
+      }
     } catch (e: any) {
       toast.error(e.message || 'Failed to erase scam directive');
     }

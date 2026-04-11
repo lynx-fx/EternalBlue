@@ -53,18 +53,19 @@ export default function SettingsPage() {
   const fetchUserData = async () => {
     setLoading(true);
     try {
-      const data = await fetchApi('/auth/get-me');
-      if (data.success) {
-        setUser(data.user);
+      const res = await fetchApi('/auth/get-me');
+      if (res.$ok) {
+        const userData = res.data.user;
+        setUser(userData);
         setProfileForm({
-          name: data.user.name || '',
-          bio: data.user.bio || '',
-          email: data.user.email || ''
+          name: userData.name || '',
+          bio: userData.bio || '',
+          email: userData.email || ''
         });
-        if (data.user.profileUrl) {
-          setPreviewUrl(data.user.profileUrl.startsWith('http') 
-            ? data.user.profileUrl 
-            : `http://localhost:8000${data.user.profileUrl}`);
+        if (userData.profileUrl) {
+          setPreviewUrl(userData.profileUrl.startsWith('http') 
+            ? userData.profileUrl 
+            : `http://localhost:8000${userData.profileUrl}`);
         }
       }
     } catch (error) {
@@ -87,16 +88,18 @@ export default function SettingsPage() {
         formData.append('profilePicture', selectedFile);
       }
       
-      const data = await fetchApi('/auth/update-profile', {
+      const res = await fetchApi('/auth/update-profile', {
         method: 'PUT',
         body: formData
       });
       
-      if (data.success) {
+      if (res.$ok) {
         setMessage({ text: 'Profile updated successfully!', type: 'success' });
-        setUser(data.user);
+        setUser(res.data.user);
         // Clean up preview if upload was successful
         setSelectedFile(null);
+      } else {
+        setMessage({ text: res.data?.message || res.message || 'Failed to update profile', type: 'error' });
       }
     } catch (error: any) {
       setMessage({ text: error.message || 'Failed to update profile', type: 'error' });
@@ -116,7 +119,7 @@ export default function SettingsPage() {
     setMessage(null);
     
     try {
-      const data = await fetchApi('/auth/change-password', {
+      const res = await fetchApi('/auth/change-password', {
         method: 'PUT',
         body: JSON.stringify({
           currentPassword: passwordForm.currentPassword,
@@ -124,13 +127,15 @@ export default function SettingsPage() {
         })
       });
       
-      if (data.success) {
+      if (res.$ok) {
         setMessage({ text: 'Password changed successfully!', type: 'success' });
         setPasswordForm({
           currentPassword: '',
           newPassword: '',
           confirmPassword: ''
         });
+      } else {
+        setMessage({ text: res.data?.message || res.message || 'Failed to change password', type: 'error' });
       }
     } catch (error: any) {
       setMessage({ text: error.message || 'Failed to change password', type: 'error' });

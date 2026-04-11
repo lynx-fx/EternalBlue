@@ -32,13 +32,17 @@ function ResetPasswordContent() {
 
     setLoading(true);
     try {
-      await fetchApi('/auth/reset-password', {
+      const res = await fetchApi('/auth/reset-password', {
         method: 'POST',
         body: JSON.stringify({ email, token, password }),
       });
-      setSuccess(true);
-      toast.success('System updated. Password reset successful.');
-      setTimeout(() => router.push('/auth/login'), 3000);
+      if (res.$ok) {
+        setSuccess(true);
+        toast.success('System updated. Password reset successful.');
+        setTimeout(() => router.push('/auth/login'), 3000);
+      } else {
+        toast.error(res.data?.message || res.message || 'Reset failed');
+      }
     } catch (error: any) {
       toast.error(error.message || 'Reset failed');
     } finally {

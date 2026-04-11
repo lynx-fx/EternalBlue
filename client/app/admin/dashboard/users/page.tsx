@@ -11,7 +11,11 @@ export default function AdminUsersPage() {
   const loadData = async () => {
     try {
       const usersRes = await fetchApi('/admin/users');
-      setUsers(usersRes.users || []);
+      if (usersRes.$ok) {
+        setUsers(usersRes.data.users || []);
+      } else {
+        toast.error(usersRes.data?.message || usersRes.message || 'Failed to fetch user data');
+      }
     } catch (err: any) {
       toast.error(err.message || 'Failed to authenticate or fetch data.');
     } finally {
@@ -25,9 +29,13 @@ export default function AdminUsersPage() {
 
   const toggleBan = async (id: string) => {
     try {
-      await fetchApi(`/admin/users/${id}/ban`, { method: 'PATCH' });
-      toast.success('User status updated');
-      loadData();
+      const res = await fetchApi(`/admin/users/${id}/ban`, { method: 'PATCH' });
+      if (res.$ok) {
+        toast.success(res.data?.message || 'User status updated');
+        loadData();
+      } else {
+        toast.error(res.data?.message || res.message || 'Failed to change user status');
+      }
     } catch (e: any) {
       toast.error(e.message || 'Failed to change user status');
     }
@@ -36,9 +44,13 @@ export default function AdminUsersPage() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('WARNING: Erasing this user is irreversible. Proceed?')) return;
     try {
-      await fetchApi(`/admin/users/${id}`, { method: 'DELETE' });
-      toast.success('Entity permanently erased');
-      loadData();
+      const res = await fetchApi(`/admin/users/${id}`, { method: 'DELETE' });
+      if (res.$ok) {
+        toast.success(res.data?.message || 'Entity permanently erased');
+        loadData();
+      } else {
+        toast.error(res.data?.message || res.message || 'Failed to erase user entity');
+      }
     } catch (e: any) {
       toast.error(e.message || 'Failed to erase user entity');
     }

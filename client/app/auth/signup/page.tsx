@@ -24,18 +24,18 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const { code } = response;
-      const data = await fetchApi('/auth/google-login', {
+      const res = await fetchApi('/auth/google-login', {
         method: 'POST',
         body: JSON.stringify({ code }),
       });
       
-      if (!data.$ok) {
-        toast.error(data.message || 'Google Authentication failed');
+      if (!res.$ok) {
+        toast.error(res.data?.message || res.message || 'Google Authentication failed');
         return;
       }
 
-      localStorage.setItem('token', data.token);
-      toast.success(data.message || 'Access granted. Welcome to VoyageAI');
+      localStorage.setItem('token', res.data.token);
+      toast.success(res.data.message || 'Access granted. Welcome to VoyageAI');
       router.push('/dashboard');
     } catch (error: any) {
       toast.error(error.message || 'Google Authentication failed');
@@ -56,7 +56,7 @@ export default function SignupPage() {
 
     try {
       const name = `${formData.firstName} ${formData.lastName}`.trim();
-      const data = await fetchApi('/auth/signup', {
+      const res = await fetchApi('/auth/signup', {
         method: 'POST',
         body: JSON.stringify({
           name,
@@ -66,8 +66,8 @@ export default function SignupPage() {
         }),
       });
 
-      if (!data.$ok) {
-        toast.error(data.message || 'Signup failed');
+      if (!res.$ok) {
+        toast.error(res.data?.message || res.message || 'Signup failed');
         return;
       }
 

@@ -16,9 +16,13 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      await fetchApi(`/auth/forgot-password?email=${encodeURIComponent(email)}`);
-      setSent(true);
-      toast.success('Recovery link sent to your email.');
+      const res = await fetchApi(`/auth/forgot-password?email=${encodeURIComponent(email)}`);
+      if (res.$ok) {
+        setSent(true);
+        toast.success('Recovery link sent to your email.');
+      } else {
+        toast.error(res.data?.message || res.message || 'Request failed');
+      }
     } catch (error: any) {
       toast.error(error.message || 'Request failed');
     } finally {
