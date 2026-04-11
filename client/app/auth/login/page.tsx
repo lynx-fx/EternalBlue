@@ -19,21 +19,21 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const { code } = response;
-      const data = await fetchApi('/auth/google-login', {
+      const res = await fetchApi('/auth/google-login', {
         method: 'POST',
         body: JSON.stringify({ code }),
       });
       
-      if (!response.$ok) {
-        toast.error(response.data.message || 'Google Authentication failed');
+      if (!res.$ok) {
+        toast.error(res.data?.message || 'Google Authentication failed');
         return;
       }
 
-      localStorage.setItem('token', data.token);
-      toast.success(data.message || 'Access granted. Welcome Back.');
+      localStorage.setItem('token', res.data.token);
+      toast.success(res.data.message || 'Access granted. Welcome Back.');
       
       const sessionRetriever = await fetchApi('/auth/get-me');
-      if (sessionRetriever.user.role === 'admin') {
+      if (sessionRetriever.$ok && sessionRetriever.data.user.role === 'admin') {
          router.push('/admin/dashboard');
       } else {
          router.push('/dashboard');
@@ -70,7 +70,7 @@ export default function LoginPage() {
       toast.success('Access granted. Welcome Back.');
 
       const sessionRetriever = await fetchApi('/auth/get-me');
-      if (sessionRetriever.user.role === 'admin') {
+      if (sessionRetriever.$ok && sessionRetriever.data.user.role === 'admin') {
          router.push('/admin/dashboard');
       } else {
          router.push('/dashboard');

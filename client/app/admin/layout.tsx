@@ -34,10 +34,10 @@ export default function DashboardLayout({
     const getUser = async () => {
       try {
         const data = await fetchApi('/auth/get-me');
-        if (data.user.role !== 'admin') {
+        if (!data.$ok || data.data.user.role !== 'admin') {
            return router.push('/dashboard');
         }
-        setUser(data.user);
+        setUser(data.data.user);
       } catch (error) {
         // If not authenticated or not admin, bounce
         router.push('/auth/login');

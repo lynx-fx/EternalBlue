@@ -17,9 +17,14 @@ export default function AdminSettings() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const data = await fetchApi('/auth/get-me');
-        setUser(data.user);
-        setProfileData({ name: data.user.name, bio: data.user.bio || '' });
+        const res = await fetchApi('/auth/get-me');
+        if (res.$ok) {
+          const userData = res.data.user;
+          setUser(userData);
+          setProfileData({ name: userData.name, bio: userData.bio || '' });
+        } else {
+          toast.error('Failed to load credentials');
+        }
       } catch (error) {
         toast.error('Failed to load credentials');
       } finally {
@@ -32,11 +37,15 @@ export default function AdminSettings() {
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetchApi('/auth/update-profile', {
+      const res = await fetchApi('/auth/update-profile', {
         method: 'PUT',
         body: JSON.stringify(profileData),
       });
-      toast.success('Admin identity updated successfully');
+      if (res.$ok) {
+        toast.success('Admin identity updated successfully');
+      } else {
+        toast.error(res.data?.message || res.message || 'Failed to update profile');
+      }
     } catch (err: any) {
       toast.error(err.message || 'Failed to update profile');
     }
@@ -48,15 +57,19 @@ export default function AdminSettings() {
       return toast.error('New passwords do not match');
     }
     try {
-      await fetchApi('/auth/change-password', {
+      const res = await fetchApi('/auth/change-password', {
         method: 'PUT',
         body: JSON.stringify({
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
         }),
       });
-      toast.success('Security passphrase updated');
-      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      if (res.$ok) {
+        toast.success('Security passphrase updated');
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        toast.error(res.data?.message || res.message || 'Authentication error');
+      }
     } catch (err: any) {
       toast.error(err.message || 'Authentication error');
     }

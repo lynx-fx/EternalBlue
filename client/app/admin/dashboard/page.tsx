@@ -13,7 +13,11 @@ export default function AdminOverview() {
     const loadAnalytics = async () => {
       try {
         const res = await fetchApi('/admin/analytics');
-        setStats(res.analytics);
+        if (res.$ok) {
+          setStats(res.data.analytics);
+        } else {
+          toast.error(res.data?.message || 'Failed to load telemetry data');
+        }
       } catch (err: any) {
         toast.error('Failed to load telemetry data');
       } finally {
@@ -29,12 +33,20 @@ export default function AdminOverview() {
       if (!newAdmin.name || !newAdmin.email || !newAdmin.password) {
         return toast.error('Please fill all required fields');
       }
-      await fetchApi('/admin/users/admin', { method: 'POST', body: JSON.stringify(newAdmin) });
+      const resAdd = await fetchApi('/admin/users/admin', { method: 'POST', body: JSON.stringify(newAdmin) });
+      
+      if (!resAdd.$ok) {
+        return toast.error(resAdd.data?.message || resAdd.message || 'Failed to create administrator');
+      }
+
       toast.success('Admin authorization created successfully');
       setNewAdmin({ name: '', email: '', password: '' });
+      
       // Refresh admins stat natively
       const res = await fetchApi('/admin/analytics');
-      setStats(res.analytics);
+      if (res.$ok) {
+        setStats(res.data.analytics);
+      }
     } catch (e: any) {
       toast.error(e.message || 'Failed to create administrator');
     }
