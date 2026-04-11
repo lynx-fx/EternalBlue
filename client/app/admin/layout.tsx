@@ -79,7 +79,7 @@ export default function DashboardLayout({
             <span className="font-bold text-[10px] tracking-[0.2em] text-emerald-100/70 uppercase mt-1">Command Center</span>
           </div>
 
-          <nav className="flex-1 flex flex-col pl-6 space-y-2">
+          <nav className="flex-1 flex flex-col pl-6 space-y-3">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = pathname === item.href;
@@ -88,24 +88,28 @@ export default function DashboardLayout({
                   key={item.name}
                   href={item.href}
                   className={`
-                    flex items-center gap-4 py-4 pl-6 relative transition-all duration-300 rounded-l-full group
+                    flex items-center gap-4 py-4 pl-6 relative transition-all duration-300 group
                     ${active 
-                      ? "bg-[#F8FDF9] text-emerald-700 z-10 shadow-sm pointer-events-none" 
-                      : "text-emerald-50 hover:text-white hover:bg-emerald-500/30"
+                      ? "bg-[#F8FDF9] text-emerald-700 z-10 shadow-sm pointer-events-none rounded-l-full" 
+                      : "text-emerald-50 hover:text-white hover:bg-emerald-500/30 rounded-2xl mr-10"
                     }
                   `}
                 >
                   {/* Flawless Top Curve Injection */}
-                  <div className={`absolute -top-8 right-0 w-8 h-8 pointer-events-none transition-opacity duration-300 ${active ? 'opacity-100' : 'opacity-0'}`}>
-                     <div className="absolute inset-0 bg-[#F8FDF9]"></div>
-                     <div className="absolute inset-0 bg-emerald-600 rounded-br-[2rem]"></div>
-                  </div>
-                  
-                  {/* Flawless Bottom Curve Injection */}
-                  <div className={`absolute -bottom-8 right-0 w-8 h-8 pointer-events-none transition-opacity duration-300 ${active ? 'opacity-100' : 'opacity-0'}`}>
-                     <div className="absolute inset-0 bg-[#F8FDF9]"></div>
-                     <div className="absolute inset-0 bg-emerald-600 rounded-tr-[2rem]"></div>
-                  </div>
+                  {active && (
+                    <>
+                      <div className="absolute -top-6 right-0 w-6 h-6 pointer-events-none">
+                         <div className="absolute inset-0 bg-[#F8FDF9]"></div>
+                         <div className="absolute inset-0 bg-emerald-600 rounded-br-[1.5rem]"></div>
+                      </div>
+                      
+                      {/* Flawless Bottom Curve Injection */}
+                      <div className="absolute -bottom-6 right-0 w-6 h-6 pointer-events-none">
+                         <div className="absolute inset-0 bg-[#F8FDF9]"></div>
+                         <div className="absolute inset-0 bg-emerald-600 rounded-tr-[1.5rem]"></div>
+                      </div>
+                    </>
+                  )}
 
                   <Icon size={20} className={`transition-colors duration-300 ${active ? 'text-emerald-600' : 'group-hover:scale-110'}`} />
                   <span className="font-medium text-[15px] tracking-wide">{item.name}</span>
