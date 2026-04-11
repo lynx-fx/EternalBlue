@@ -289,3 +289,17 @@ exports.verifyEmail = async (email, token) => {
 
     return;
 }
+
+exports.searchUsers = async (query, currentUserId) => {
+    const keyword = query
+        ? {
+            $or: [
+                { name: { $regex: query, $options: "i" } },
+                { email: { $regex: query, $options: "i" } },
+            ],
+          }
+        : {};
+
+    const users = await User.find(keyword).find({ _id: { $ne: currentUserId } });
+    return users;
+};

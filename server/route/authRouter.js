@@ -16,4 +16,6 @@ router.post("/reset-password", authController.resetPassword);
 router.put("/update-profile", protect, upload.single("profilePicture"), authController.updateProfile);
 router.put("/change-password", protect, authController.changePassword);
 
-module.exports = router;
+router.get("/search", protect, authController.searchUsers);
+
+module.exports = router;
