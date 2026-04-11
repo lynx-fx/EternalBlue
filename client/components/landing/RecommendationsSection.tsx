@@ -51,11 +51,11 @@ export default function RecommendationsSection() {
               <Image 
                 src={rec.category === 'Hotel' 
                   ? 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop' 
-                  : `https://images.unsplash.com/photo-${1500000000000 + i}?q=80&w=2000&auto=format&fit=crop`} 
+                  : ['https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=2070&auto=format&fit=crop', 'https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?q=80&w=2070&auto=format&fit=crop', 'https://images.unsplash.com/photo-1524866299105-08103df12ba6?q=80&w=2066&auto=format&fit=crop'][i % 3]} 
                 alt={rec.title} 
                 fill 
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-700" 
-                onError={(e: any) => { e.target.src = 'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=2070&auto=format&fit=crop' }}
               />
               <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-medium px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
                  <div className="w-1 h-1 bg-white rounded-full animate-pulse" /> {rec.location}
