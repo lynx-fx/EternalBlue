@@ -1,18 +1,13 @@
-const express = require("express");
+const router = require("express").Router();
+const recommendationController = require("../controller/recommendationController");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
-const { 
-  createRecommendation, 
-  getRecommendations, 
-  deleteRecommendation 
-} = require("../controller/recommendationController");
 
-const router = express.Router();
+// Public routes
+router.get("/", recommendationController.getAllRecommendations);
 
-router.route("/")
-  .get(protect, getRecommendations)
-  .post(protect, adminOnly, createRecommendation);
-
-router.route("/:id")
-  .delete(protect, adminOnly, deleteRecommendation);
+// Admin routes
+router.post("/", protect, adminOnly, recommendationController.createRecommendation);
+router.put("/:id", protect, adminOnly, recommendationController.updateRecommendation);
+router.delete("/:id", protect, adminOnly, recommendationController.deleteRecommendation);
 
 module.exports = router;
