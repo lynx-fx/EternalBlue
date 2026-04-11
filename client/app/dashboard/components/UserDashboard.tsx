@@ -50,7 +50,7 @@ export default function UserDashboard({ user }: { user: any }) {
           <div className="flex items-center justify-between px-2">
             <h3 className="text-xl font-bold text-slate-950 uppercase tracking-tight flex items-center gap-3">
               <ShieldAlert className="text-emerald-600" size={24} />
-              Priority Intelligence
+              Recent Alerts
             </h3>
             <button className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
               View All Alerts

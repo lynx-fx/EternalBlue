@@ -16,9 +16,10 @@ import {
   Loader2,
   ArrowRight,
   Shield,
-  MapPin,
   History,
-  Plus
+  Plus,
+  X,
+  MapPin
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchApi } from "@/lib/api";
@@ -70,7 +71,8 @@ export default function DashboardChatbot() {
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [discoveries, setDiscoveries] = useState<{ id: string, name: string, time: string }[]>([]);
+  const [discoveries, setDiscoveries] = useState<{ id: string, name: string, time: string, fullText: string }[]>([]);
+  const [selectedDiscovery, setSelectedDiscovery] = useState<{ id: string, name: string, time: string, fullText: string } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const addToItinerary = (text: string) => {
@@ -79,7 +81,8 @@ export default function DashboardChatbot() {
     const newEntry = {
       id: Date.now().toString(),
       name: name,
-      time: "Just now"
+      time: "Just now",
+      fullText: text
     };
     setDiscoveries(prev => [newEntry, ...prev]);
     toast.success(`${name} added to your itinerary`);
@@ -466,6 +469,7 @@ export default function DashboardChatbot() {
                     animate={{ opacity: 1, x: 0 }}
                     key={dest.id} 
                     className="group cursor-pointer"
+                    onClick={() => setSelectedDiscovery(dest)}
                   >
                     <div className="bg-white border border-slate-100 rounded-3xl p-5 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-200/20 transition-all duration-500 flex items-center justify-between">
                       <div>
@@ -492,6 +496,35 @@ export default function DashboardChatbot() {
           </div>
         </div>
       </aside>
+
+      {/* Discovery Modal Popup */}
+      {selectedDiscovery && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-[2.5rem] p-8 md:p-10 max-w-2xl w-full max-h-[85vh] overflow-y-auto custom-scrollbar relative shadow-2xl">
+            <button 
+              onClick={() => setSelectedDiscovery(null)}
+              className="absolute top-6 right-6 w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-red-50 hover:text-red-500 transition-colors"
+            >
+              <X size={18} strokeWidth={3} />
+            </button>
+            <div className="flex items-center gap-4 mb-8">
+               <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
+                  <MapPin size={24} />
+               </div>
+               <div>
+                  <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">{selectedDiscovery.name}</h2>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Added {selectedDiscovery.time}</p>
+               </div>
+            </div>
+            
+            <div className="prose prose-sm max-w-none prose-emerald prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {selectedDiscovery.fullText}
+              </ReactMarkdown>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {

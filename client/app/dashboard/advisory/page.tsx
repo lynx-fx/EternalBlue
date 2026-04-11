@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   ShieldCheck, 
   AlertTriangle, 
@@ -14,41 +14,78 @@ import {
   Sparkles
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const ADVISORIES = [
-  {
-    category: "High Altitude Intelligence",
-    icon: Wind,
-    color: "text-blue-600",
-    bg: "bg-blue-50",
-    updates: [
-      { id: 1, title: "AMS Protocol", status: "Critical", description: "Altitude sickness (AMS) risk is currently high for Everest & Annapurna circuits. Acclimatization days are mandatory." },
-      { id: 2, title: "Weather Window", status: "Advisory", description: "Unpredictable wind shifts detected near Namche Bazaar. Trekking after 3PM is highly discouraged." }
-    ]
-  },
-  {
-    category: "Bureaucratic Protocol",
-    icon: ShieldCheck,
-    color: "text-emerald-600",
-    bg: "bg-emerald-50",
-    updates: [
-      { id: 3, title: "TIMS Card Requirement", status: "Alert", description: "New TIMS regulations in effect. Solo trekking without a certified guide is now restricted in most protected regions." },
-      { id: 4, title: "Permit Processing", status: "Operational", description: "Upper Mustang permits are being processed at normal speeds (24-48 hours window)." }
-    ]
-  },
-  {
-    category: "Financial Security",
-    icon: Wallet,
-    color: "text-amber-600",
-    bg: "bg-amber-50",
-    updates: [
-      { id: 5, title: "ATM Reliability", status: "Advisory", description: "Frequent power outages in Lukla & Namche affecting ATM availability. Carry sufficient NPR cash for higher altitude sectors." },
-      { id: 6, title: "Conversion Rates", status: "Market", description: "Volatility detected in exchange rates for USD to NPR at local Kathmandu counters." }
-    ]
-  }
-];
+import { fetchApi } from '@/lib/api';
+import { toast } from 'sonner';
 
 export default function AdvisoryPage() {
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const res = await fetchApi('/recommendations');
+        if (res.$ok) {
+          setRecommendations(res.data.data || []);
+        } else {
+          toast.error("Failed to load recommendations");
+        }
+      } catch (err) {
+        toast.error("Error connecting to terminal");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecommendations();
+  }, []);
+
+  // Format recommendations into tactical view
+  const hotels = recommendations.filter(r => r.category === 'Hotel');
+  const places = recommendations.filter(r => r.category === 'Place');
+
+  const ADVISORIES = [
+    {
+      category: "Verified Accommodations",
+      icon: Heart,
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+      emptyState: "No registered safehouses in this sector.",
+      updates: hotels.map(h => ({
+        id: h._id,
+        title: h.title,
+        status: h.location, // Hijacking status badge for location
+        description: h.description
+      }))
+    },
+    {
+      category: "Secured Sectors",
+      icon: MapPin,
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      emptyState: "No secured sectors verified.",
+      updates: places.map(p => ({
+        id: p._id,
+        title: p.title,
+        status: p.location,
+        description: p.description
+      }))
+    },
+    {
+      category: "High Altitude Intelligence",
+      icon: Wind,
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+      emptyState: "Intelligence feed normal.",
+      updates: [
+        { id: 'static1', title: "AMS Protocol", status: "Critical", description: "Altitude sickness (AMS) risk is currently high for Everest & Annapurna circuits. Acclimatization days are mandatory." },
+        { id: 'static2', title: "Weather Window", status: "Advisory", description: "Unpredictable wind shifts detected near Namche Bazaar. Trekking after 3PM is highly discouraged." }
+      ]
+    }
+  ];
+
+  if (loading) {
+    return <div className="h-[calc(100vh-140px)] flex items-center justify-center font-black animate-pulse text-slate-400 uppercase tracking-widest text-sm">Accessing Safety Terminal...</div>;
+  }
   return (
     <div className="p-8 md:p-12 space-y-12 max-w-7xl mx-auto">
       {/* Header */}
@@ -95,7 +132,7 @@ export default function AdvisoryPage() {
                     <div className="flex items-center justify-between">
                       <span className={`text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-[0.2em] border ${
                         update.status === 'Critical' ? 'bg-red-50 text-red-600 border-red-100' :
-                        update.status === 'Alert' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                        update.status === 'Advisory' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                         'bg-emerald-50 text-emerald-600 border-emerald-100'
                       }`}>
                         {update.status}
@@ -108,6 +145,9 @@ export default function AdvisoryPage() {
                     </p>
                   </div>
                 ))}
+                {section.updates.length === 0 && (
+                  <p className="text-xs font-bold text-slate-400 italic text-center py-6">{section.emptyState}</p>
+                )}
               </div>
             </div>
           </motion.div>
