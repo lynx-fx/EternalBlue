@@ -53,6 +53,10 @@ export default function DashboardLayout({
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
 
+  if (user?.role === 'admin') {
+    navItems.push({ name: 'Admin Panel', href: '/dashboard/admin', icon: ShieldCheck });
+  }
+
   return (
     <div className="min-h-screen bg-[#F8FDF9] flex relative">
       {/* Mobile Toggle */}

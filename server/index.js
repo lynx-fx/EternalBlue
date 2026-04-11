@@ -8,6 +8,7 @@ const authRouter = require("./route/authRouter");
 const chatRouter = require("./route/chatRouter");
 const messageRouter = require("./route/messageRouter");
 const aiRouter = require("./route/aiRouter");
+const scamRouter = require("./route/scamRouter");
 require("./job/cron");
 
 const frontend =
@@ -51,6 +52,7 @@ app.use("/api/admin", require("./route/adminRouter"));
 app.use("/api/chat", chatRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/ai", aiRouter);
+app.use("/api/scams", scamRouter);
 
 mongoose
   .connect(mongoUri)
