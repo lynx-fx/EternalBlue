@@ -45,12 +45,12 @@ export default function DiscoveryPage() {
           />
         </div>
         <div className="relative z-10 max-w-2xl space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-            <Sparkles size={14} className="text-emerald-400" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">Voyager Selection</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full">
+            <Sparkles size={14} className="text-primary-400" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-400">Voyager Selection</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none">
-            Discover the <span className="text-emerald-500">Unseen</span> Himalayas
+            Discover the <span className="text-primary-500">Unseen</span> Himalayas
           </h1>
           <p className="text-slate-400 font-medium text-lg leading-relaxed italic">
             Hand-picked expeditions and elite sanctuaries, curated for the modern Voyager.
@@ -70,7 +70,7 @@ export default function DiscoveryPage() {
             onClick={() => setFilter(btn.id)}
             className={`px-8 py-4 rounded-2xl flex items-center gap-3 text-[10px] font-black uppercase tracking-widest transition-all ${
               filter === btn.id 
-                ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-600/20' 
+                ? 'bg-primary-600 text-white shadow-xl shadow-primary-600/20' 
                 : 'bg-white border border-slate-100 text-slate-400 hover:bg-slate-50'
             }`}
           >
@@ -98,7 +98,7 @@ export default function DiscoveryPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               key={rec._id}
-              className="group bg-white border border-slate-100 rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-500"
+              className="group bg-white border border-slate-100 rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-primary-900/5 transition-all duration-500"
             >
               <div className="h-64 relative overflow-hidden">
                 <img 
@@ -109,7 +109,7 @@ export default function DiscoveryPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute top-6 left-6">
                   <span className={`px-4 py-2 rounded-full backdrop-blur-md text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${
-                    rec.type === 'trip' ? 'bg-emerald-600/80 text-white' : 'bg-blue-600/80 text-white'
+                    rec.type === 'trip' ? 'bg-primary-600/80 text-white' : 'bg-blue-600/80 text-white'
                   }`}>
                     {rec.type === 'trip' ? <Trees size={12} /> : <Hotel size={12} />}
                     {rec.type}
@@ -125,7 +125,7 @@ export default function DiscoveryPage() {
                         <Star key={i} size={10} className={i < rec.rating ? "fill-amber-500" : "text-slate-200"} />
                       ))}
                     </div>
-                    <span className="text-sm font-black text-emerald-600 tracking-tighter">{rec.price || 'Contact for Pricing'}</span>
+                    <span className="text-sm font-black text-primary-600 tracking-tighter">{rec.price || 'Contact for Pricing'}</span>
                   </div>
                   <h3 className="text-xl font-black text-slate-950 uppercase tracking-tighter leading-tight line-clamp-2">{rec.title}</h3>
                   <div className="flex items-center gap-1.5 text-slate-400">
@@ -138,7 +138,7 @@ export default function DiscoveryPage() {
                   {rec.description}
                 </p>
 
-                <button className="w-full py-4 bg-slate-50 hover:bg-emerald-600 hover:text-white rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest transition-all group/btn">
+                <button className="w-full py-4 bg-slate-50 hover:bg-primary-600 hover:text-white rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest transition-all group/btn">
                   View Intelligence <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>

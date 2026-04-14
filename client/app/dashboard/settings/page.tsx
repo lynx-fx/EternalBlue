@@ -163,7 +163,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
-        <Loader2 className="w-10 h-10 text-emerald-600 animate-spin" />
+        <Loader2 className="w-10 h-10 text-primary-600 animate-spin" />
         <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Synchronizing Profile...</p>
       </div>
     );
@@ -176,9 +176,9 @@ export default function SettingsPage() {
           <h1 className="text-4xl font-black text-slate-950 uppercase tracking-tighter">Account Setup</h1>
           <p className="text-slate-500 font-medium">Manage your global profile and security credentials.</p>
         </div>
-        <div className="flex items-center gap-2 px-6 py-3 bg-emerald-50 rounded-2xl border border-emerald-100">
-          <Shield className="text-emerald-600" size={18} />
-          <span className="text-xs font-black text-emerald-950 uppercase tracking-widest">Verification Active</span>
+        <div className="flex items-center gap-2 px-6 py-3 bg-primary-50 rounded-2xl border border-primary-100">
+          <Shield className="text-primary-600" size={18} />
+          <span className="text-xs font-black text-primary-950 uppercase tracking-widest">Verification Active</span>
         </div>
       </div>
 
@@ -220,7 +220,7 @@ export default function SettingsPage() {
            {/* Feedback Message */}
            {message && (
              <div className={`mb-10 p-4 rounded-2xl border flex items-center gap-4 animate-slide-up ${
-               message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-red-50 text-red-700 border-red-100'
+               message.type === 'success' ? 'bg-primary-50 text-primary-700 border-primary-100' : 'bg-red-50 text-red-700 border-red-100'
              }`}>
                {message.type === 'success' ? <Check size={20} /> : <AlertCircle size={20} />}
                <span className="text-sm font-bold uppercase tracking-tight">{message.text}</span>
@@ -260,7 +260,7 @@ export default function SettingsPage() {
                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Operational Name</label>
                      <input 
                        type="text" 
-                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all font-bold text-slate-900"
+                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-primary-500 focus:bg-white transition-all font-bold text-slate-900"
                        value={profileForm.name}
                        onChange={(e) => setProfileForm({...profileForm, name: e.target.value})}
                        required
@@ -279,7 +279,7 @@ export default function SettingsPage() {
                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Personal Dossier (Bio)</label>
                      <textarea 
                        rows={4}
-                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all font-bold text-slate-900 resize-none"
+                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-primary-500 focus:bg-white transition-all font-bold text-slate-900 resize-none"
                        placeholder="Tell the network about yourself..."
                        value={profileForm.bio}
                        onChange={(e) => setProfileForm({...profileForm, bio: e.target.value})}
@@ -291,7 +291,7 @@ export default function SettingsPage() {
                   <button 
                     type="submit"
                     disabled={submitting}
-                    className="px-10 py-4 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-300 text-white font-black rounded-2xl transition-all shadow-xl shadow-emerald-900/20 uppercase tracking-widest text-xs flex items-center gap-2"
+                    className="px-10 py-4 bg-primary-600 hover:bg-primary-500 disabled:bg-slate-300 text-white font-black rounded-2xl transition-all shadow-xl shadow-primary-900/20 uppercase tracking-widest text-xs flex items-center gap-2"
                   >
                     {submitting ? <Loader2 size={16} className="animate-spin" /> : 'Synchronize Profile'}
                   </button>
@@ -312,7 +312,7 @@ export default function SettingsPage() {
                      <div className="relative">
                         <input 
                           type={showCurrentPass ? 'text' : 'password'} 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all font-bold text-slate-900"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-primary-500 focus:bg-white transition-all font-bold text-slate-900"
                           value={passwordForm.currentPassword}
                           onChange={(e) => setPasswordForm({...passwordForm, currentPassword: e.target.value})}
                           required
@@ -331,7 +331,7 @@ export default function SettingsPage() {
                      <div className="relative">
                         <input 
                           type={showNewPass ? 'text' : 'password'} 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all font-bold text-slate-900"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-primary-500 focus:bg-white transition-all font-bold text-slate-900"
                           value={passwordForm.newPassword}
                           onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
                           required
@@ -349,7 +349,7 @@ export default function SettingsPage() {
                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirm New Key</label>
                      <input 
                        type="password" 
-                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all font-bold text-slate-900"
+                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:border-primary-500 focus:bg-white transition-all font-bold text-slate-900"
                        value={passwordForm.confirmPassword}
                        onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
                        required
@@ -387,7 +387,7 @@ export default function SettingsPage() {
                            <h4 className="text-sm font-bold text-slate-900 uppercase tracking-tight">{item.title}</h4>
                            <p className="text-xs text-slate-500 font-medium">{item.desc}</p>
                         </div>
-                        <div className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${item.enabled ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+                        <div className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${item.enabled ? 'bg-primary-500' : 'bg-slate-300'}`}>
                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${item.enabled ? 'left-7' : 'left-1'}`} />
                         </div>
                      </div>

@@ -53,7 +53,7 @@ function ResetPasswordContent() {
   if (success) {
     return (
       <div className="text-center space-y-6 py-8 animate-fade-in">
-        <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl shadow-emerald-900/10 rotate-3">
+        <div className="w-20 h-20 bg-primary-100 text-primary-600 rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl shadow-primary-900/10 rotate-3">
           <ShieldCheck size={44} strokeWidth={2.5} />
         </div>
         <div className="space-y-2">
@@ -80,7 +80,7 @@ function ResetPasswordContent() {
             New Password
           </label>
           <div className="relative group">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-600 transition-colors">
               <Lock size={18} />
             </div>
             <input
@@ -88,7 +88,7 @@ function ResetPasswordContent() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/50 transition-all text-sm font-bold"
+              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500/50 transition-all text-sm font-bold"
               placeholder="••••••••"
             />
           </div>
@@ -99,7 +99,7 @@ function ResetPasswordContent() {
             Confirm Password
           </label>
           <div className="relative group">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-600 transition-colors">
               <Lock size={18} />
             </div>
             <input
@@ -107,7 +107,7 @@ function ResetPasswordContent() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/50 transition-all text-sm font-bold"
+              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500/50 transition-all text-sm font-bold"
               placeholder="••••••••"
             />
           </div>
@@ -116,7 +116,7 @@ function ResetPasswordContent() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-emerald-600 text-white rounded-2xl py-4 font-bold hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 shadow-lg shadow-emerald-200 mt-6"
+          className="w-full bg-primary-600 text-white rounded-2xl py-4 font-bold hover:bg-primary-700 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 shadow-lg shadow-primary-200 mt-6"
         >
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -134,7 +134,7 @@ function ResetPasswordContent() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="text-center p-20"><Loader2 className="animate-spin mx-auto w-8 h-8 text-emerald-600" /></div>}>
+    <Suspense fallback={<div className="text-center p-20"><Loader2 className="animate-spin mx-auto w-8 h-8 text-primary-600" /></div>}>
       <ResetPasswordContent />
     </Suspense>
   );

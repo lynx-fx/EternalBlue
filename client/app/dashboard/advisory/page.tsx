@@ -88,7 +88,7 @@ export default function AdvisoryPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-200">
+            <div className="w-12 h-12 bg-primary-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-primary-200">
               <ShieldCheck size={24} strokeWidth={2.5} />
             </div>
             <h1 className="text-4xl font-black text-slate-950 uppercase tracking-tighter">Safety Terminal</h1>
@@ -99,7 +99,7 @@ export default function AdvisoryPage() {
         </div>
         
         <div className="px-6 py-4 bg-white border border-slate-100 rounded-[2rem] shadow-xl shadow-slate-200/50 flex items-center gap-4">
-          <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse" />
+          <div className="w-3 h-3 bg-primary-500 rounded-full animate-pulse" />
           <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest">Global Status: Operational</p>
         </div>
       </div>
@@ -112,17 +112,17 @@ export default function AdvisoryPage() {
         className="relative bg-slate-950 rounded-[3.5rem] p-10 md:p-16 overflow-hidden text-white shadow-2xl shadow-slate-900/20"
       >
         <div className="relative z-10 max-w-6xl mx-auto space-y-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-            <Heart size={14} className="text-emerald-400" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">Cultural Etiquette</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full">
+            <Heart size={14} className="text-primary-400" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-400">Cultural Etiquette</span>
           </div>
           
-          <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none">Respecting the <span className="text-emerald-500">Divine Terrain</span></h2>
+          <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none">Respecting the <span className="text-primary-500">Divine Terrain</span></h2>
           
           <div className="space-y-4">
             {travelTips.length > 0 ? travelTips.map((tip, index) => (
               <div key={tip._id} className="flex items-start gap-4 p-6 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10">
-                <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 flex-shrink-0">
+                <div className="w-10 h-10 bg-primary-500/20 rounded-xl flex items-center justify-center text-primary-400 flex-shrink-0">
                   <span className="font-black text-xs">{(index + 1).toString().padStart(2, '0')}</span>
                 </div>
                 <div>
@@ -214,14 +214,14 @@ export default function AdvisoryPage() {
                 </div>
                 {emergencyData.tourist_helpline && (
                   <div className="flex justify-between items-center bg-black/20 p-4 rounded-2xl border border-white/5 hover:bg-black/30 transition-colors">
-                    <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Tourist Helpline</span>
-                    <span className="text-lg font-black tracking-widest text-emerald-400">{emergencyData.tourist_helpline}</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-primary-300">Tourist Helpline</span>
+                    <span className="text-lg font-black tracking-widest text-primary-400">{emergencyData.tourist_helpline}</span>
                   </div>
                 )}
                 {emergencyData.tourist_police && (
                   <div className="flex justify-between items-center bg-black/20 p-4 rounded-2xl border border-white/5 hover:bg-black/30 transition-colors">
-                    <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Tourist Police</span>
-                    <span className="text-lg font-black tracking-widest text-emerald-400">{emergencyData.tourist_police}</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-primary-300">Tourist Police</span>
+                    <span className="text-lg font-black tracking-widest text-primary-400">{emergencyData.tourist_police}</span>
                   </div>
                 )}
               </div>

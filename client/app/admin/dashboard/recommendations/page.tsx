@@ -118,7 +118,7 @@ export default function AdminRecommendations() {
         </div>
         <button 
           onClick={showAddForm ? resetForm : () => setShowAddForm(true)}
-          className={`px-6 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs flex items-center gap-3 transition-all shadow-xl active:scale-95 ${showAddForm ? 'bg-slate-200 text-slate-600 hover:bg-slate-300' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'}`}
+          className={`px-6 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs flex items-center gap-3 transition-all shadow-xl active:scale-95 ${showAddForm ? 'bg-slate-200 text-slate-600 hover:bg-slate-300' : 'bg-primary-600 hover:bg-primary-700 text-white shadow-primary-600/20'}`}
         >
           {showAddForm ? <X size={16} /> : <Plus size={16} />}
           {showAddForm ? 'Cancel Operation' : 'Deploy New Selection'}
@@ -133,7 +133,7 @@ export default function AdminRecommendations() {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-10 shadow-2xl shadow-emerald-900/5 mb-8">
+            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-10 shadow-2xl shadow-primary-900/5 mb-8">
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div className="space-y-6 lg:col-span-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -142,7 +142,7 @@ export default function AdminRecommendations() {
                       <input 
                         type="text" 
                         required 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
                         placeholder="e.g. Ama Dablam Base Camp Trek"
                         value={newRec.title}
                         onChange={e => setNewRec({...newRec, title: e.target.value})}
@@ -151,11 +151,11 @@ export default function AdminRecommendations() {
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Primary Location</label>
                       <div className="relative">
-                        <MapPin size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-500" />
+                        <MapPin size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-primary-500" />
                         <input 
                           type="text" 
                           required 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-14 pr-6 py-4 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-14 pr-6 py-4 text-sm font-bold text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
                           placeholder="e.g. Solu-Khumbu Region"
                           value={newRec.location}
                           onChange={e => setNewRec({...newRec, location: e.target.value})}
@@ -168,7 +168,7 @@ export default function AdminRecommendations() {
                     <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] ml-2">Description / Intel</label>
                     <textarea 
                       required 
-                      className="w-full bg-slate-50 border border-slate-100 rounded-3xl px-6 py-4 text-sm font-medium text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all min-h-[140px] resize-none"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-3xl px-6 py-4 text-sm font-medium text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all min-h-[140px] resize-none"
                       placeholder="Detail the experience, highlights, and unique selling points..."
                       value={newRec.description}
                       onChange={e => setNewRec({...newRec, description: e.target.value})}
@@ -183,7 +183,7 @@ export default function AdminRecommendations() {
                       <button 
                         type="button"
                         onClick={() => setNewRec({...newRec, type: 'trip'})}
-                        className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'trip' ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
+                        className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'trip' ? 'bg-primary-600 border-primary-600 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
                       >
                         <Trees size={16} />
                         <span className="text-[9px] font-black uppercase">Expedition</span>
@@ -191,7 +191,7 @@ export default function AdminRecommendations() {
                       <button 
                         type="button"
                         onClick={() => setNewRec({...newRec, type: 'hotel'})}
-                        className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'hotel' ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
+                        className={`flex items-center justify-center gap-2 py-4 rounded-2xl border transition-all ${newRec.type === 'hotel' ? 'bg-primary-600 border-primary-600 text-white shadow-lg' : 'bg-slate-50 border-slate-100 text-slate-500'}`}
                       >
                         <Hotel size={16} />
                         <span className="text-[9px] font-black uppercase">Safehouse</span>
@@ -214,7 +214,7 @@ export default function AdminRecommendations() {
                         <DollarSign size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                         <input 
                           type="text" 
-                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-black text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-black text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
                           placeholder="$1,200"
                           value={newRec.price}
                           onChange={e => setNewRec({...newRec, price: e.target.value})}
@@ -228,7 +228,7 @@ export default function AdminRecommendations() {
                         <input 
                           type="number" 
                           min="1" max="5"
-                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-black text-slate-950 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-black text-slate-950 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
                           value={newRec.rating}
                           onChange={e => setNewRec({...newRec, rating: parseInt(e.target.value)})}
                         />
@@ -242,7 +242,7 @@ export default function AdminRecommendations() {
                       <ImageIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                       <input 
                         type="url" 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-medium text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-10 pr-4 py-4 text-sm font-medium text-slate-950 placeholder:text-slate-400 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all"
                         placeholder="https://images.unsplash.com/..."
                         value={newRec.imageUrl}
                         onChange={e => setNewRec({...newRec, imageUrl: e.target.value})}
@@ -280,7 +280,7 @@ export default function AdminRecommendations() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               key={rec._id}
-              className="group bg-white border border-slate-100 rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-500"
+              className="group bg-white border border-slate-100 rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-primary-900/5 transition-all duration-500"
             >
               <div className="h-56 relative overflow-hidden">
                 <img 
@@ -289,7 +289,7 @@ export default function AdminRecommendations() {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute top-6 left-6 flex gap-2">
-                  <div className={`px-4 py-2 rounded-full backdrop-blur-md text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${rec.type === 'trip' ? 'bg-emerald-600/80 text-white' : 'bg-blue-600/80 text-white'}`}>
+                  <div className={`px-4 py-2 rounded-full backdrop-blur-md text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${rec.type === 'trip' ? 'bg-primary-600/80 text-white' : 'bg-blue-600/80 text-white'}`}>
                     {rec.type === 'trip' ? <Trees size={12} /> : <Hotel size={12} />}
                     {rec.type}
                   </div>
@@ -297,7 +297,7 @@ export default function AdminRecommendations() {
                 <div className="absolute top-6 right-6 flex gap-2">
                   <button 
                     onClick={() => handleEdit(rec)}
-                    className="w-10 h-10 bg-white text-slate-900 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg hover:bg-emerald-50"
+                    className="w-10 h-10 bg-white text-slate-900 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg hover:bg-primary-50"
                   >
                     <Edit3 size={16} />
                   </button>
@@ -318,7 +318,7 @@ export default function AdminRecommendations() {
                       <span className="text-[10px] font-black text-slate-900">{rec.rating}.0</span>
                     </div>
                     {rec.price && (
-                      <span className="text-sm font-black text-emerald-600 tracking-tighter">{rec.price}</span>
+                      <span className="text-sm font-black text-primary-600 tracking-tighter">{rec.price}</span>
                     )}
                   </div>
                   <h3 className="text-xl font-black text-slate-950 leading-tight uppercase tracking-tighter">{rec.title}</h3>
@@ -334,7 +334,7 @@ export default function AdminRecommendations() {
 
                 <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 size={14} className="text-emerald-500" />
+                    <CheckCircle2 size={14} className="text-primary-500" />
                     <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Network Verified</span>
                   </div>
                   <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">

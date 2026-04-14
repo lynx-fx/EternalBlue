@@ -38,13 +38,13 @@ export default function AdminOverview() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 className="text-5xl font-black text-slate-900 uppercase tracking-tighter leading-none">
-            Network <span className="text-emerald-600">Telemetry</span>
+            Network <span className="text-primary-600">Telemetry</span>
           </h1>
           <p className="text-slate-500 font-medium mt-3 text-lg">Real-time oversight of the Voyager security matrix.</p>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-          <span className="text-[10px] font-black text-emerald-950 uppercase tracking-widest text-nowrap">Live Satellite Sync Active</span>
+        <div className="flex items-center gap-2 px-4 py-2 bg-primary-50 rounded-2xl border border-primary-100">
+          <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
+          <span className="text-[10px] font-black text-primary-950 uppercase tracking-widest text-nowrap">Live Satellite Sync Active</span>
         </div>
       </div>
 
@@ -59,7 +59,7 @@ export default function AdminOverview() {
           {/* Main Stat Matrix */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { label: 'Network Users', val: stats.totalUsers, icon: Users, color: 'emerald', shadow: 'shadow-emerald-900/5' },
+              { label: 'Network Users', val: stats.totalUsers, icon: Users, color: 'primary', shadow: 'shadow-primary-900/5' },
               { label: 'Active Personnel', val: stats.activeUsers, icon: CheckCircle, color: 'blue', shadow: 'shadow-blue-900/5' },
               { label: 'Global Directives', val: stats.activeDirectives, icon: Activity, color: 'amber', shadow: 'shadow-amber-900/5' },
               { label: 'Priority Alerts', val: stats.priorityAlerts, icon: AlertOctagon, color: 'red', shadow: 'shadow-red-900/5', isAlert: true }
@@ -85,7 +85,7 @@ export default function AdminOverview() {
           {/* Advanced Analytics Section */}
           <div className="grid lg:grid-cols-[1fr_400px] gap-8">
             <div className="bg-slate-950 rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20">
-               <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-emerald-500/10 blur-[100px]" />
+               <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-primary-500/10 blur-[100px]" />
                <div className="absolute bottom-0 left-0 w-[30%] h-[30%] bg-blue-500/10 blur-[80px]" />
                
                <div className="relative z-10 flex flex-col h-full gap-10">
@@ -94,7 +94,7 @@ export default function AdminOverview() {
                         <h3 className="text-2xl font-black uppercase tracking-tighter">System Health Matrix</h3>
                         <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Aggregated node performance and risk</p>
                      </div>
-                     <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400">
+                     <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-primary-400">
                         Operational Status: 99.8%
                      </div>
                   </div>
@@ -111,7 +111,7 @@ export default function AdminOverview() {
                                 initial={{ width: 0 }}
                                 animate={{ width: `${activityPercentage}%` }}
                                 transition={{ duration: 1.5, ease: "easeOut" }}
-                                className="h-full bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.5)]" 
+                                className="h-full bg-primary-500 shadow-[0_0_20px_rgba(16,185,129,0.5)]" 
                               />
                            </div>
                         </div>
@@ -133,7 +133,7 @@ export default function AdminOverview() {
                      </div>
 
                      <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-center gap-4 hover:bg-white/[0.08] transition-colors cursor-default">
-                        <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-xl shadow-emerald-500/10 mb-2">
+                        <div className="w-16 h-16 rounded-full bg-primary-500/20 flex items-center justify-center text-primary-500 shadow-xl shadow-primary-500/10 mb-2">
                            <Activity size={32} />
                         </div>
                         <h4 className="text-xl font-black uppercase tracking-tight">Active Pulse</h4>
@@ -151,7 +151,7 @@ export default function AdminOverview() {
 
                <div className="space-y-4">
                   {[
-                    { label: 'Administrator Nodes', val: stats.admins, icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+                    { label: 'Administrator Nodes', val: stats.admins, icon: ShieldCheck, color: 'text-primary-600', bg: 'bg-primary-50', border: 'border-primary-100' },
                     { label: 'Support Agents', val: 0, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
                     { label: 'Database Integrity', val: '100%', icon: Database, color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-100' }
                   ].map((item, i) => (

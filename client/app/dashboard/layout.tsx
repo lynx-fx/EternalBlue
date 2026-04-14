@@ -69,7 +69,7 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-[#F8FDF9] flex relative">
       {/* Mobile Toggle */}
       <button 
-        className="lg:hidden fixed bottom-6 right-6 z-50 bg-emerald-600 text-white p-4 rounded-2xl shadow-2xl shadow-emerald-200"
+        className="lg:hidden fixed bottom-8 right-8 z-50 bg-primary-600 text-white w-14 h-14 rounded-2xl shadow-2xl shadow-primary-900/40 flex items-center justify-center active:scale-95 transition-all border border-primary-400/20"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
         {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
@@ -77,13 +77,13 @@ export default function DashboardLayout({
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-72 bg-emerald-600 lg:rounded-tr-[3rem] lg:rounded-br-[3rem] transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static flex flex-col shadow-2xl shadow-emerald-600/20
+        fixed inset-y-0 left-0 z-40 w-72 bg-primary-600 lg:rounded-tr-[3rem] lg:rounded-br-[3rem] transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static flex flex-col shadow-2xl shadow-primary-600/20
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="h-full flex flex-col py-10">
           <div className="pl-10 flex flex-col mb-12">
             <span className="font-display font-black text-2xl tracking-widest text-white uppercase">VOYAGE</span>
-            <span className="font-bold text-[10px] tracking-[0.2em] text-emerald-100/70 uppercase mt-1">Command Center</span>
+            <span className="font-bold text-[10px] tracking-[0.2em] text-primary-100/70 uppercase mt-1">Command Center</span>
           </div>
 
           <nav className="flex-1 flex flex-col pl-6 space-y-3">
@@ -97,8 +97,8 @@ export default function DashboardLayout({
                   className={`
                     flex items-center gap-4 py-4 pl-6 relative group
                     ${active 
-                      ? "bg-[#F8FDF9] text-emerald-700 z-10 shadow-sm pointer-events-none rounded-l-full" 
-                      : "text-emerald-50 hover:text-white hover:bg-emerald-500/30 rounded-2xl mr-10 transition-colors duration-300"
+                      ? "bg-[#F8FDF9] text-primary-700 z-10 shadow-sm pointer-events-none rounded-l-full" 
+                      : "text-primary-50 hover:text-white hover:bg-primary-500/30 rounded-2xl mr-10 transition-colors duration-300"
                     }
                   `}
                 >
@@ -107,18 +107,18 @@ export default function DashboardLayout({
                     <>
                       <div className="absolute -top-6 right-0 w-6 h-6 pointer-events-none">
                          <div className="absolute inset-0 bg-[#F8FDF9]"></div>
-                         <div className="absolute inset-0 bg-emerald-600 rounded-br-[1.5rem]"></div>
+                         <div className="absolute inset-0 bg-primary-600 rounded-br-[1.5rem]"></div>
                       </div>
                       
                       {/* Flawless Bottom Curve Injection */}
                       <div className="absolute -bottom-6 right-0 w-6 h-6 pointer-events-none">
                          <div className="absolute inset-0 bg-[#F8FDF9]"></div>
-                         <div className="absolute inset-0 bg-emerald-600 rounded-tr-[1.5rem]"></div>
+                         <div className="absolute inset-0 bg-primary-600 rounded-tr-[1.5rem]"></div>
                       </div>
                     </>
                   )}
 
-                  <Icon size={20} className={`transition-colors duration-300 ${active ? 'text-emerald-600' : 'group-hover:scale-110'}`} />
+                  <Icon size={20} className={`transition-colors duration-300 ${active ? 'text-primary-600' : 'group-hover:scale-110'}`} />
                   <span className="font-medium text-[15px] tracking-wide">{item.name}</span>
                 </Link>
               );
@@ -157,17 +157,17 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 min-w-0 h-screen ${pathname === '/dashboard/chatbot' ? 'overflow-hidden' : 'overflow-y-auto'} relative`}>
+      <main className={`flex-1 min-w-0 h-screen ${pathname === '/dashboard/chatbot' ? 'overflow-hidden' : 'overflow-y-auto'} relative no-scrollbar`}>
         {/* Soft background glow */}
-        <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-emerald-50/50 rounded-full blur-[100px] pointer-events-none -z-10" />
+        <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-primary-50/50 rounded-full blur-[100px] pointer-events-none -z-10" />
         
-        <header className="h-20 flex items-center justify-between px-8 lg:px-12 bg-white/40 backdrop-blur-md sticky top-0 z-30 border-b border-emerald-100/30">
+        <header className="h-16 md:h-20 flex items-center justify-between px-6 lg:px-12 bg-white/40 backdrop-blur-md sticky top-0 z-30 border-b border-primary-100/30">
           <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-emerald-500" />
-            <h2 className="text-sm font-display font-bold text-emerald-950 uppercase tracking-widest">Command Center</h2>
+            <Sparkles size={18} className="text-primary-500" />
+            <h2 className="text-[11px] md:text-sm font-display font-bold text-primary-950 uppercase tracking-widest">Command Center</h2>
           </div>
           <div className="flex items-center gap-4">
-             <Link href="/dashboard/settings" className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-600 transition-colors shadow-sm cursor-pointer overflow-hidden">
+             <Link href="/dashboard/settings" className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-primary-600 transition-colors shadow-sm cursor-pointer overflow-hidden">
                 {user?.profileUrl ? (
                   <img 
                     src={user.profileUrl.startsWith('http') ? user.profileUrl : `http://localhost:8000${user.profileUrl}`} 
@@ -182,7 +182,7 @@ export default function DashboardLayout({
         </header>
 
         <div className={`
-          ${pathname === '/dashboard/chatbot' ? 'p-0' : 'p-8 lg:p-12'} 
+          ${pathname === '/dashboard/chatbot' ? 'p-0' : 'p-4 sm:p-8 lg:p-12'} 
           transition-all duration-500 animate-fade-in
         `}>
           {children}

@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
               Email Address
             </label>
             <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-600 transition-colors">
                 <Mail size={18} />
               </div>
               <input
@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/50 transition-all text-sm font-medium"
+                className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500/50 transition-all text-sm font-medium"
                 placeholder="name@example.com"
               />
             </div>
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-600 text-white rounded-2xl py-4 font-bold hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 shadow-lg shadow-emerald-200"
+            className="w-full bg-primary-600 text-white rounded-2xl py-4 font-bold hover:bg-primary-700 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 shadow-lg shadow-primary-200"
           >
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -75,7 +75,7 @@ export default function ForgotPasswordPage() {
         </form>
       ) : (
         <div className="text-center py-4 space-y-4">
-          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <Mail size={32} />
           </div>
           <p className="text-sm font-medium text-slate-600">
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
       <div className="text-center">
         <Link 
           href="/auth/login" 
-          className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-emerald-600 transition-colors uppercase tracking-widest"
+          className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase tracking-widest"
         >
           <ChevronLeft size={16} />
           Back to Login

@@ -60,12 +60,12 @@ export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps)
         >
           <Popup className="custom-popup">
             <div className="p-2 space-y-2 text-center">
-              <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Active Hub</p>
+              <p className="text-[10px] font-black text-primary-600 uppercase tracking-widest">Active Hub</p>
               <h4 className="text-sm font-black text-slate-900 uppercase tracking-tighter leading-none">{hub.chatName}</h4>
               <p className="text-[10px] font-medium text-slate-500">{hub.users.length} explorers active</p>
               <button 
                 onClick={() => onJoin(hub)}
-                className="w-full mt-2 py-2 bg-slate-950 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-lg hover:bg-emerald-600 transition-colors"
+                className="w-full mt-2 py-2 bg-slate-950 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-lg hover:bg-primary-600 transition-colors"
                 type="button"
               >
                 Join Cluster
@@ -96,17 +96,17 @@ export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps)
         >
           <Popup className="custom-popup">
             <div className="p-4 space-y-3 text-center min-w-[180px]">
-              <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mx-auto mb-2 animate-pulse">
+              <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center text-primary-600 mx-auto mb-2 animate-pulse">
                 <Sparkles size={18} />
               </div>
               <div>
-                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">Unlinked Signal</p>
+                <p className="text-[9px] font-black text-primary-600 uppercase tracking-widest leading-none mb-1">Unlinked Signal</p>
                 <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">{beacon.name}</h4>
               </div>
               <p className="text-[10px] font-medium text-slate-400 leading-tight">Initialize this cluster to establish a secure regional network node.</p>
               <button 
                 onClick={() => onCreateHub(beacon.name, beacon.coords as [number, number])}
-                className="w-full py-3 bg-emerald-600 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-slate-950 transition-all shadow-lg shadow-emerald-200"
+                className="w-full py-3 bg-primary-600 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-slate-950 transition-all shadow-lg shadow-primary-200"
                 type="button"
               >
                 Activate & Join

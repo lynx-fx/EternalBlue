@@ -31,7 +31,7 @@ const SafetyMap = dynamic(() => import('./SafetyMap'), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full bg-slate-50 flex items-center justify-center">
-      <Loader2 className="animate-spin text-emerald-500" />
+      <Loader2 className="animate-spin text-primary-500" />
     </div>
   )
 });
@@ -386,7 +386,7 @@ export default function ChatsPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-140px)] flex bg-white/40 backdrop-blur-xl rounded-[3rem] border border-white overflow-hidden shadow-2xl shadow-emerald-900/5 animate-fade-in">
+    <div className="h-[calc(100vh-140px)] flex bg-white/40 backdrop-blur-xl rounded-[3rem] border border-white overflow-hidden shadow-2xl shadow-primary-900/5 animate-fade-in">
       
       {/* Sidebar - Chat List */}
       <div className={`w-full md:w-[380px] flex flex-col border-r border-slate-100 ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
@@ -395,7 +395,7 @@ export default function ChatsPage() {
             <h2 className="text-2xl font-black text-slate-950 uppercase tracking-tighter">Global Net</h2>
             <button 
               onClick={() => setSelectedChat(null)}
-              className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50 hover:bg-emerald-600 hover:text-white transition-all active:scale-95 group"
+              className="w-10 h-10 bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 shadow-sm border border-primary-100/50 hover:bg-primary-600 hover:text-white transition-all active:scale-95 group"
               title="Return to Map"
             >
                <Globe size={18} className="group-hover:rotate-[360deg] transition-transform duration-1000" />
@@ -403,11 +403,11 @@ export default function ChatsPage() {
           </div>
 
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors" size={18} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-500 transition-colors" size={18} />
             <input 
               type="text" 
               placeholder="Locate fellow travellers..."
-              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-inner"
+              className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-primary-500 focus:bg-white transition-all shadow-inner"
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
             />
@@ -419,13 +419,13 @@ export default function ChatsPage() {
             <div className="space-y-4 pt-2">
               <p className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Sensor Search Results</p>
               {isSearching ? (
-                <div className="flex justify-center py-10"><Loader2 className="animate-spin text-emerald-500" /></div>
+                <div className="flex justify-center py-10"><Loader2 className="animate-spin text-primary-500" /></div>
               ) : searchResults.length > 0 ? (
                 searchResults.map(u => (
                   <button 
                     key={u._id}
                     onClick={() => accessChat(u._id)}
-                    className="w-full flex items-center gap-4 p-4 rounded-3xl hover:bg-emerald-50 transition-all text-left border border-transparent hover:border-emerald-100"
+                    className="w-full flex items-center gap-4 p-4 rounded-3xl hover:bg-primary-50 transition-all text-left border border-transparent hover:border-primary-100"
                   >
                     <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 shadow-sm">
                        {u.profileUrl ? <img src={u.profileUrl} className="w-full h-full object-cover rounded-2xl" /> : <User size={20} />}
@@ -459,7 +459,7 @@ export default function ChatsPage() {
                       }`}
                     >
                       <div className="relative">
-                        <div className="w-14 h-14 bg-emerald-100 rounded-[1.2rem] flex items-center justify-center text-emerald-600 shadow-sm overflow-hidden">
+                        <div className="w-14 h-14 bg-primary-100 rounded-[1.2rem] flex items-center justify-center text-primary-600 shadow-sm overflow-hidden">
                           {chat.isGroupChat ? (
                             <Hash size={24} strokeWidth={2.5} />
                           ) : otherUser?.profileUrl ? (
@@ -468,7 +468,7 @@ export default function ChatsPage() {
                             <User size={24} strokeWidth={2.5} />
                           )}
                         </div>
-                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary-500 border-2 border-white rounded-full shadow-sm" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-baseline mb-1">
@@ -504,7 +504,7 @@ export default function ChatsPage() {
         {!selectedChat && (
           <div className="absolute top-8 left-8 z-20 pointer-events-none">
              <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-100 shadow-xl flex items-center gap-3 pointer-events-auto">
-               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+               <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none">Global Hub Matrix Active</span>
              </div>
           </div>
@@ -523,7 +523,7 @@ export default function ChatsPage() {
                 >
                   <ArrowLeft size={20} />
                 </button>
-                <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                <div className="w-12 h-12 bg-primary-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary-200">
                    {selectedChat.isGroupChat ? (
                      <Hash size={22} strokeWidth={2.5} />
                    ) : getOtherUser(selectedChat.users)?.profileUrl ? (
@@ -537,17 +537,17 @@ export default function ChatsPage() {
                     {selectedChat.isGroupChat ? selectedChat.chatName : getOtherUser(selectedChat.users)?.name}
                   </h3>
                   <div className="flex items-center gap-2">
-                    <Circle size={8} fill="currentColor" className="text-emerald-500" />
+                    <Circle size={8} fill="currentColor" className="text-primary-500" />
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Transmission Online</span>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                 <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-emerald-600 text-[9px] font-black uppercase tracking-widest">
+                 <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-primary-50 border border-primary-100 rounded-full text-primary-600 text-[9px] font-black uppercase tracking-widest">
                    <ShieldCheck size={11} />
                    End-to-End Secure
                  </div>
-                 <button className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-emerald-600 transition-colors">
+                 <button className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-primary-600 transition-colors">
                    <MoreVertical size={20} />
                  </button>
               </div>
@@ -567,7 +567,7 @@ export default function ChatsPage() {
                     <div className={`max-w-[70%] space-y-1 relative ${isMine ? 'items-end' : 'items-start'}`}>
                       {!isMine && selectedChat.isGroupChat && (
                         <div className="flex justify-between items-end px-4 mb-1">
-                          <span className="text-[10px] font-black text-emerald-600/80 uppercase tracking-widest block">
+                          <span className="text-[10px] font-black text-primary-600/80 uppercase tracking-widest block">
                             {m.sender?.name || "Explorer"}
                           </span>
                         </div>
@@ -604,8 +604,8 @@ export default function ChatsPage() {
 
             {/* Input Area */}
             <div className="p-8 bg-white border-t border-slate-100">
-              <div className="relative flex items-center gap-4 bg-slate-50 p-2 rounded-[2.5rem] border border-slate-100 focus-within:border-emerald-500/30 focus-within:bg-white transition-all duration-500 shadow-inner">
-                 <button className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-emerald-600 transition-all rounded-full hover:bg-emerald-50">
+              <div className="relative flex items-center gap-4 bg-slate-50 p-2 rounded-[2.5rem] border border-slate-100 focus-within:border-primary-500/30 focus-within:bg-white transition-all duration-500 shadow-inner">
+                 <button className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-primary-600 transition-all rounded-full hover:bg-primary-50">
                     <Plus size={22} />
                  </button>
                  <input 
@@ -621,7 +621,7 @@ export default function ChatsPage() {
                    disabled={!newMessage.trim()}
                    className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
                      newMessage.trim() 
-                     ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-400/40 hover:scale-105 active:scale-95' 
+                     ? 'bg-primary-600 text-white shadow-xl shadow-primary-400/40 hover:scale-105 active:scale-95' 
                      : 'bg-slate-200 text-slate-400'
                    }`}
                  >
@@ -656,7 +656,7 @@ export default function ChatsPage() {
             {/* Subtle Map Controls / Status */}
             <div className="absolute top-8 left-8 z-10 pointer-events-none">
               <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-slate-100 shadow-xl flex items-center gap-3 pointer-events-auto">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
                 <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none">Global Hub Matrix Active</span>
               </div>
             </div>
@@ -673,7 +673,7 @@ export default function ChatsPage() {
             className="bg-white rounded-[2rem] shadow-2xl p-8 max-w-md w-full border border-slate-100"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
+              <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600">
                 <Hash size={20} className="stroke-[2.5px]" />
               </div>
               <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Initialize Cluster</h3>
@@ -689,7 +689,7 @@ export default function ChatsPage() {
               value={newHubName}
               onChange={(e) => setNewHubName(e.target.value)}
               placeholder="e.g. Basecamp Alpha"
-              className="w-full px-5 py-4 bg-slate-50 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition-all text-sm font-bold text-slate-800 placeholder:text-slate-400 mb-6"
+              className="w-full px-5 py-4 bg-slate-50 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:bg-white transition-all text-sm font-bold text-slate-800 placeholder:text-slate-400 mb-6"
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
                   setShowHubModal(false);
@@ -710,7 +710,7 @@ export default function ChatsPage() {
                   setShowHubModal(false);
                   createHub(newHubName, newHubCoords);
                 }}
-                className="flex-1 py-3 bg-emerald-600 text-white font-black text-xs uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 hover:-translate-y-0.5 transition-all"
+                className="flex-1 py-3 bg-primary-600 text-white font-black text-xs uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-primary-200 hover:bg-primary-700 hover:-translate-y-0.5 transition-all"
               >
                 Establish Link
               </button>
