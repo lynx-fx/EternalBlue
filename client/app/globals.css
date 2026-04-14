@@ -8,17 +8,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary-50: #f0f5f6;
-  --color-primary-100: #e1ebed;
-  --color-primary-200: #c2d7db;
-  --color-primary-300: #a3c3c9;
-  --color-primary-400: #669ba5;
-  --color-primary-500: #2d5a61;
-  --color-primary-600: #1C3E43;
-  --color-primary-700: #183539;
-  --color-primary-800: #142d30;
-  --color-primary-900: #102427;
-  --color-primary-950: #0c1b1d;
+  --color-primary-50: #f1f4f4;
+  --color-primary-100: #e2e8e9;
+  --color-primary-200: #c5d1d3;
+  --color-primary-300: #a7babe;
+  --color-primary-400: #6c8c93;
+  --color-primary-500: #315e67;
+  --color-primary-600: #132c2f;
+  --color-primary-700: #102629;
+  --color-primary-800: #0d1f21;
+  --color-primary-900: #0a181a;
+  --color-primary-950: #071112;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
