@@ -144,7 +144,7 @@ export default function AdminScamsPage() {
                  />
               </div>
 
-              <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-5 rounded-[2rem] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-200 group active:scale-[0.98]">
+              <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white py-5 rounded-[2rem] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary-200 group active:scale-[0.98]">
                  <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" /> Broadcast Intelligence
               </button>
            </form>
@@ -185,7 +185,7 @@ export default function AdminScamsPage() {
                       </button>
                    </div>
 
-                   <h4 className="text-xl font-black text-slate-900 tracking-tight leading-tight mb-4 group-hover:text-emerald-700 transition-colors uppercase">{scam.title}</h4>
+                   <h4 className="text-xl font-black text-slate-900 tracking-tight leading-tight mb-4 group-hover:text-primary-700 transition-colors uppercase">{scam.title}</h4>
                    <p className="text-sm text-slate-500 font-bold leading-relaxed mb-6 italic border-l-4 border-slate-100 pl-6">
                       {scam.description}
                    </p>

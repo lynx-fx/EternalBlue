@@ -101,7 +101,7 @@ export default function AdminReportsPage() {
                <div className="flex md:flex-col gap-3 shrink-0">
                   <button 
                     onClick={() => handleUpdateStatus(report._id, 'Resolved')}
-                    className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all"
+                    className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all"
                   >
                     <CheckCircle size={14} /> Resolve 
                   </button>
@@ -116,7 +116,7 @@ export default function AdminReportsPage() {
           ))}
           {pendingReports.length === 0 && (
              <div className="bg-slate-50 border border-dashed border-slate-200 rounded-[2.5rem] py-20 flex flex-col items-center justify-center text-slate-400 gap-4">
-               <ShieldCheck size={40} className="opacity-20 translate-y-2 text-emerald-600" />
+               <ShieldCheck size={40} className="opacity-20 translate-y-2 text-primary-600" />
                <p className="font-black uppercase tracking-[0.3em] text-[10px]">No pending operations</p>
             </div>
           )}
@@ -138,7 +138,7 @@ export default function AdminReportsPage() {
             {resolvedReports.map(report => (
               <div key={report._id} className="bg-white border border-slate-100 rounded-[2rem] p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                  <div className="flex items-center gap-4">
-                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.2em] ${report.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.2em] ${report.status === 'Resolved' ? 'bg-primary-50 text-primary-600' : 'bg-slate-100 text-slate-500'}`}>
                        {report.status}
                     </span>
                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mt-1">

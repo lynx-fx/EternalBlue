@@ -91,7 +91,7 @@ export default function AdminSettings() {
         <aside className="space-y-2">
            <button 
              onClick={() => setActiveTab('profile')}
-             className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'text-slate-500 hover:bg-slate-50'}`}
+             className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-primary-600 text-white shadow-lg shadow-primary-200' : 'text-slate-500 hover:bg-slate-50'}`}
            >
              <User size={16} /> Identity Parameters
            </button>
@@ -106,7 +106,7 @@ export default function AdminSettings() {
               <div className="bg-[#1C3E43] rounded-[2rem] p-6 text-white relative overflow-hidden">
                  <Shield className="text-[#9ECEC2] mb-4 opacity-50" size={32} />
                  <h3 className="text-sm font-black uppercase tracking-tighter mb-2">Master Access</h3>
-                 <p className="text-emerald-100/60 text-[10px] font-bold uppercase leading-relaxed">Full administrative privileges active on this node.</p>
+                 <p className="text-primary-100/60 text-[10px] font-bold uppercase leading-relaxed">Full administrative privileges active on this node.</p>
               </div>
            </div>
         </aside>
@@ -116,7 +116,7 @@ export default function AdminSettings() {
           {activeTab === 'profile' && (
             <section className="bg-white border border-slate-100 rounded-[2.5rem] p-10 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
                <div className="flex items-center gap-3 mb-10">
-                  <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center">
                      <User size={20} />
                   </div>
                   <div>
@@ -133,7 +133,7 @@ export default function AdminSettings() {
                           type="text" 
                           value={profileData.name}
                           onChange={(e) => setProfileData({...profileData, name: e.target.value})}
-                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-300 shadow-inner"
+                          className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-primary-500/5 focus:border-primary-500 outline-none transition-all placeholder:text-slate-300 shadow-inner"
                         />
                      </div>
                      <div className="space-y-3">
@@ -152,11 +152,11 @@ export default function AdminSettings() {
                        value={profileData.bio}
                        onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
                        rows={4}
-                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 outline-none transition-all resize-none shadow-inner"
+                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-primary-500/5 focus:border-primary-500 outline-none transition-all resize-none shadow-inner"
                        placeholder="Enter role description..."
                      />
                   </div>
-                  <button type="submit" className="w-full md:w-auto px-10 py-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-emerald-200 flex items-center justify-center gap-2">
+                  <button type="submit" className="w-full md:w-auto px-10 py-5 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary-200 flex items-center justify-center gap-2">
                      Update Identity
                   </button>
                </form>
@@ -221,20 +221,20 @@ export default function AdminSettings() {
           {/* System Status Mock (Static) */}
           <div className="bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100">
              <div className="flex items-center gap-3 mb-6">
-                <Activity size={18} className="text-emerald-600" />
+                <Activity size={18} className="text-primary-600" />
                 <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em]">Live System Telemetry</h4>
              </div>
              <div className="grid md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Session Status</p>
-                   <p className="text-sm font-black text-emerald-600 uppercase">Authenticated</p>
+                   <p className="text-sm font-black text-primary-600 uppercase">Authenticated</p>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Passphrase Strength</p>
                    <div className="flex items-center gap-1">
-                      <div className="h-1 flex-1 bg-emerald-500 rounded-full"></div>
-                      <div className="h-1 flex-1 bg-emerald-500 rounded-full"></div>
-                      <div className="h-1 flex-1 bg-emerald-500 rounded-full"></div>
+                      <div className="h-1 flex-1 bg-primary-500 rounded-full"></div>
+                      <div className="h-1 flex-1 bg-primary-500 rounded-full"></div>
+                      <div className="h-1 flex-1 bg-primary-500 rounded-full"></div>
                    </div>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
