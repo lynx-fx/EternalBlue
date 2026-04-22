@@ -1,4 +1,6 @@
-const fetch = require('node-fetch');
+// Node-fetch is an ESM module and cannot be required in CommonJS.
+// Since Node v18+, native fetch is available globally.
+
 
 // If using Node 18+, fetch is natively available. 
 // Note: If 'node-fetch' isn't explicitly defined, we can just rely on the global native fetch.
