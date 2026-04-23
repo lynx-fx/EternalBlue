@@ -56,6 +56,7 @@ export default function DashboardLayout({
   const navItems = [
     { name: 'Overview', href: '/admin/dashboard', icon: ShieldCheck },
     { name: 'User Control', href: '/admin/dashboard/users', icon: Users },
+    { name: 'Map Moderation', href: '/admin/dashboard/map-pins', icon: Map },
     { name: 'Scam Directives', href: '/admin/dashboard/scams', icon: AlertOctagon },
     { name: 'Voyager Discovery', href: '/admin/dashboard/recommendations', icon: Compass },
     { name: 'Settings', href: '/admin/dashboard/settings', icon: Settings },
