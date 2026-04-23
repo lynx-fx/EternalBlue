@@ -2,7 +2,7 @@ const Scam = require("../model/Scam");
 
 exports.addScam = async (req, res) => {
     try {
-        const { country, title, description, severity } = req.body;
+        const { country, title, description, severity, coordinates } = req.body;
         if (!country || !title || !description) {
             return res.status(400).json({ success: false, message: "Country, title, and description are required" });
         }
@@ -12,6 +12,7 @@ exports.addScam = async (req, res) => {
             title,
             description,
             severity: severity || "Medium",
+            coordinates: coordinates || null,
             createdBy: req.user.id || req.user._id
         });
 

@@ -10,6 +10,7 @@ const scamSchema = new mongoose.Schema(
       enum: ["High", "Medium", "Low"],
       default: "Medium"
     },
+    coordinates: { type: [Number], default: undefined },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

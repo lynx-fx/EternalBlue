@@ -24,14 +24,24 @@ interface Chat {
 
 interface SafetyMapProps {
   hubs: Chat[];
+  scams?: any[];
   onJoin: (hub: Chat) => void;
   onCreateHub: (name: string, coords: [number, number]) => void;
 }
 
-export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps) {
+export default function SafetyMap({ hubs, scams = [], onJoin, onCreateHub }: SafetyMapProps) {
   const customIcon = useMemo(() => {
     return new L.Icon({
       iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+    });
+  }, []);
+
+  const alertIcon = useMemo(() => {
+    return new L.Icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/564/564619.png', // Red alert icon
       iconSize: [32, 32],
       iconAnchor: [16, 32],
       popupAnchor: [0, -32],
@@ -52,7 +62,7 @@ export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps)
       />
 
       {/* Existing Hubs */}
-      {hubs.map(hub => hub.coordinates && (
+      {hubs.map(hub => hub.coordinates && hub.coordinates.length === 2 && (
         <Marker 
           key={hub._id} 
           position={hub.coordinates}
@@ -70,6 +80,26 @@ export default function SafetyMap({ hubs, onJoin, onCreateHub }: SafetyMapProps)
               >
                 Join Cluster
               </button>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
+
+      {/* Scam Alerts */}
+      {scams.map(scam => scam.coordinates && scam.coordinates.length === 2 && (
+        <Marker 
+          key={scam._id} 
+          position={scam.coordinates}
+          icon={alertIcon}
+        >
+          <Popup className="custom-popup">
+            <div className="p-2 space-y-2 text-center">
+              <p className="text-[10px] font-black text-red-600 uppercase tracking-widest">{scam.severity} Risk Alert</p>
+              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tighter leading-none">{scam.title}</h4>
+              <p className="text-[10px] font-medium text-slate-500 line-clamp-2">{scam.description}</p>
+              <div className="pt-2 border-t border-slate-100 mt-2">
+                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Region: {scam.country}</p>
+              </div>
             </div>
           </Popup>
         </Marker>

@@ -111,6 +111,10 @@ mongoose
         socket.broadcast.emit("hub map update", newHub);
       });
 
+      socket.on("scam created", (newScam) => {
+        socket.broadcast.emit("scam map update", newScam);
+      });
+
       socket.off("setup", (userData) => {
         console.log("USER DISCONNECTED");
         if(userData) socket.leave(userData._id);

@@ -3,11 +3,23 @@ import React, { useEffect, useState } from 'react';
 import { fetchApi } from '@/lib/api';
 import { ShieldAlert, MapPin, Trash2, Plus, AlertOctagon, Info, Globe } from 'lucide-react';
 import { toast } from 'sonner';
+import io from 'socket.io-client';
+
+const SOCKET_ENDPOINT = "http://localhost:8000";
 
 export default function AdminScamsPage() {
   const [scams, setScams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [newScam, setNewScam] = useState({ country: 'Nepal', title: '', description: '', severity: 'Medium' });
+  const [socket, setSocket] = useState<any>(null);
+
+  useEffect(() => {
+    const s = io(SOCKET_ENDPOINT);
+    setSocket(s);
+    return () => {
+      s.disconnect();
+    };
+  }, []);
 
   const loadData = async () => {
     try {
@@ -40,6 +52,9 @@ export default function AdminScamsPage() {
       const res = await fetchApi('/scams', { method: 'POST', body: JSON.stringify(payload) });
       if (res.$ok) {
         toast.success('Scam directive deployed globally');
+        if (socket) {
+          socket.emit('scam created', res.data.scam);
+        }
         setNewScam({ country: 'Nepal', title: '', description: '', severity: 'Medium' });
         loadData();
       } else {

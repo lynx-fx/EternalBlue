@@ -150,7 +150,7 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 min-w-0 h-screen ${pathname === '/admin/dashboard/chatbot' ? 'overflow-hidden' : 'overflow-y-auto'} relative`}>
+      <main className={`flex-1 min-w-0 h-screen flex flex-col ${pathname === '/admin/dashboard/chatbot' ? 'overflow-hidden' : ''} relative no-scrollbar`}>
         {/* Soft background glow */}
         <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-primary-50/50 rounded-full blur-[100px] pointer-events-none -z-10" />
         
@@ -167,8 +167,8 @@ export default function DashboardLayout({
         </header>
 
         <div className={`
-          ${pathname === '/dashboard/chatbot' ? 'p-0' : 'p-8 lg:p-12'} 
-          transition-all duration-500 animate-fade-in
+          flex-1 ${pathname === '/dashboard/chatbot' ? 'p-0 overflow-hidden' : 'p-4 md:p-6 lg:p-8 overflow-y-auto'} 
+          transition-all duration-500 animate-fade-in no-scrollbar
         `}>
           {children}
         </div>

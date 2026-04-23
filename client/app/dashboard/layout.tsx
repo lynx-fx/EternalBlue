@@ -67,7 +67,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FDF9] flex relative">
+    <div className="h-screen bg-[#F8FDF9] flex relative overflow-hidden">
       {/* Mobile Toggle */}
       <button 
         className="lg:hidden fixed bottom-8 right-8 z-50 bg-primary-600 text-white w-14 h-14 rounded-2xl shadow-2xl shadow-primary-900/40 flex items-center justify-center active:scale-95 transition-all border border-primary-400/20"
@@ -78,7 +78,7 @@ export default function DashboardLayout({
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-72 bg-primary-600 lg:rounded-tr-[3rem] lg:rounded-br-[3rem] transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static flex flex-col shadow-2xl shadow-primary-600/20
+        fixed inset-y-0 left-0 z-40 w-72 bg-primary-600 lg:rounded-tr-[3rem] lg:rounded-br-[3rem] transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:relative flex flex-col shadow-2xl shadow-primary-600/20 h-full flex-shrink-0 overflow-y-auto no-scrollbar
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="h-full flex flex-col py-10">
@@ -158,7 +158,8 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 min-w-0 h-screen ${pathname === '/dashboard/chatbot' ? 'overflow-hidden' : 'overflow-y-auto'} relative no-scrollbar`}>
+      <main className={`flex-1 min-w-0 h-screen flex flex-col ${pathname === '/dashboard/chatbot' ? 'overflow-hidden' : ''} relative no-scrollbar`}>
+
         {/* Soft background glow */}
         <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-primary-50/50 rounded-full blur-[100px] pointer-events-none -z-10" />
         
@@ -183,9 +184,10 @@ export default function DashboardLayout({
         </header>
 
         <div className={`
-          ${pathname === '/dashboard/chatbot' ? 'p-0' : 'p-4 sm:p-8 lg:p-12'} 
-          transition-all duration-500 animate-fade-in
+          flex-1 ${pathname === '/dashboard/chatbot' ? 'p-0 overflow-hidden' : 'p-4 md:p-6 lg:p-8 overflow-y-auto'} 
+          transition-all duration-500 animate-fade-in no-scrollbar
         `}>
+
           {children}
         </div>
       </main>

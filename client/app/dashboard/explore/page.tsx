@@ -15,7 +15,11 @@ import {
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, AlertOctagon, Plus, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import io from 'socket.io-client';
+
+const SOCKET_ENDPOINT = "http://localhost:8000";
 
 interface Scam {
   _id: string;
@@ -32,6 +36,38 @@ export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedScam, setSelectedScam] = useState<Scam | null>(null);
+
+  // Reporting state
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportData, setReportData] = useState<{title: string, description: string, severity: 'High' | 'Medium' | 'Low', country: string, coordinates?: [number, number]}>({ 
+    title: '', 
+    description: '', 
+    severity: 'Medium', 
+    country: '' 
+  });
+  const [reporting, setReporting] = useState(false);
+  const [socket, setSocket] = useState<any>(null);
+
+  useEffect(() => {
+    if (showReportModal) {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          setReportData(prev => ({
+            ...prev,
+            coordinates: [position.coords.latitude, position.coords.longitude]
+          }));
+        });
+      }
+    }
+  }, [showReportModal]);
+
+  useEffect(() => {
+    const s = io(SOCKET_ENDPOINT);
+    setSocket(s);
+    return () => {
+      s.disconnect();
+    };
+  }, []);
 
   const fetchScams = async (country?: string) => {
     setLoading(true);
@@ -71,6 +107,36 @@ export default function ExplorePage() {
     fetchScams();
   };
 
+  const handleReport = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setReporting(true);
+    try {
+      const payload = {
+        ...reportData,
+        country: reportData.country.trim() || selectedCountry || 'Global'
+      };
+      const response = await fetchApi('/scams', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      if (response.$ok) {
+        toast.success('Intelligence report broadcasted globally');
+        if (socket) {
+          socket.emit('scam created', response.data.scam);
+        }
+        setShowReportModal(false);
+        setReportData({ title: '', description: '', severity: 'Medium', country: '' });
+        fetchScams();
+      } else {
+        toast.error(response.data?.message || 'Failed to submit intelligence');
+      }
+    } catch (error) {
+      toast.error('Network error during report transmission');
+    } finally {
+      setReporting(false);
+    }
+  };
+
   const getSeverityStyles = (severity: string) => {
     switch (severity) {
       case 'High':
@@ -93,7 +159,7 @@ export default function ExplorePage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 md:space-y-10 animate-fade-in pb-20 px-4 sm:px-6 md:px-0">
+    <div className="max-w-7xl mx-auto space-y-6 md:space-y-8 animate-fade-in px-4 sm:px-6 md:px-0">
       {/* Hero Header */}
       <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-slate-950 p-8 md:p-12 text-white shadow-2xl shadow-slate-900/20">
         <div className="absolute top-0 right-0 w-[50%] h-full bg-primary-600/10 blur-[120px] -z-0" />
@@ -164,7 +230,10 @@ export default function ExplorePage() {
               Clear
             </button>
           )}
-          <button className="flex-1 sm:flex-none px-4 md:px-6 py-2 md:py-2.5 bg-primary-50 text-primary-700 border border-primary-100 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:bg-primary-100 transition-all">
+          <button 
+            onClick={() => setShowReportModal(true)}
+            className="flex-1 sm:flex-none px-4 md:px-6 py-2 md:py-2.5 bg-primary-50 text-primary-700 border border-primary-100 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:bg-primary-100 transition-all"
+          >
              Report interaction
           </button>
         </div>
@@ -372,6 +441,110 @@ export default function ExplorePage() {
                   Close Intelligence Brief
                 </button>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Report Modal */}
+      <AnimatePresence>
+        {showReportModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowReportModal(false)}
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-xl bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-slate-100 overflow-hidden"
+            >
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600">
+                  <AlertOctagon size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-slate-950 uppercase tracking-tight">Report Intel</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Contribute to global safety matrix</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleReport} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Location</label>
+                  <input 
+                    type="text"
+                    required
+                    placeholder="e.g. Kathmandu, Nepal"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-bold text-slate-700 focus:bg-white focus:border-primary-500 transition-all outline-none"
+                    value={reportData.country}
+                    onChange={(e) => setReportData({...reportData, country: e.target.value})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Subject</label>
+                  <input 
+                    type="text"
+                    required
+                    placeholder="Brief headline of the incident"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-bold text-slate-700 focus:bg-white focus:border-primary-500 transition-all outline-none"
+                    value={reportData.title}
+                    onChange={(e) => setReportData({...reportData, title: e.target.value})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Severity</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {['Low', 'Medium', 'High'].map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setReportData({...reportData, severity: s as any})}
+                        className={`py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${reportData.severity === s ? 'bg-slate-950 text-white border-slate-950' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'}`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Details</label>
+                  <textarea 
+                    required
+                    rows={4}
+                    placeholder="Describe what happened and how to avoid it..."
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 text-sm font-bold text-slate-700 focus:bg-white focus:border-primary-500 transition-all outline-none resize-none"
+                    value={reportData.description}
+                    onChange={(e) => setReportData({...reportData, description: e.target.value})}
+                  />
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                  <button 
+                    type="button"
+                    onClick={() => setShowReportModal(false)}
+                    className="flex-1 py-4 bg-slate-100 text-slate-500 font-black text-xs uppercase tracking-widest rounded-[1.5rem] hover:bg-slate-200 transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    disabled={reporting}
+                    className="flex-[2] py-4 bg-primary-600 text-white font-black text-xs uppercase tracking-widest rounded-[1.5rem] hover:bg-primary-700 shadow-xl shadow-primary-900/20 transition-all flex items-center justify-center gap-2"
+                  >
+                    {reporting ? <Loader2 className="animate-spin" size={16} /> : <Plus size={16} />}
+                    Submit Report
+                  </button>
+                </div>
+              </form>
             </motion.div>
           </div>
         )}
