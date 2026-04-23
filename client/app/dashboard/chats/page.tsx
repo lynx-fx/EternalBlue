@@ -72,6 +72,7 @@ export default function ChatsPage() {
 
   // Map related state
   const [hubs, setHubs] = useState<Chat[]>([]);
+  const [scams, setScams] = useState<any[]>([]);
   const [L, setL] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -90,6 +91,7 @@ export default function ChatsPage() {
     fetchUserData();
     fetchExistingChats();
     fetchHubs();
+    fetchScams();
   }, []);
 
   const customIcon = useMemo(() => {
@@ -142,13 +144,22 @@ export default function ChatsPage() {
       });
     };
 
+    const handleScamUpdate = (newScam: any) => {
+      setScams(prev => {
+        if (prev.some(s => s._id === newScam._id)) return prev;
+        return [newScam, ...prev];
+      });
+    };
+
     socket.current.on("message recieved", handleMessageReceived);
     socket.current.on("hub map update", handleHubUpdate);
+    socket.current.on("scam map update", handleScamUpdate);
 
     return () => {
       if (socket.current) {
          socket.current.off("message recieved", handleMessageReceived);
          socket.current.off("hub map update", handleHubUpdate);
+         socket.current.off("scam map update", handleScamUpdate);
       }
     };
   }, [selectedChat]);
@@ -191,10 +202,20 @@ export default function ChatsPage() {
 
   const fetchHubs = async () => {
     try {
-      // For now, hubs are just group chats with coordinates
       const response = await fetchApi('/chat');
       const filteredHubs = (response.data || []).filter((c: Chat) => c.isGroupChat && c.coordinates);
       setHubs(filteredHubs);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchScams = async () => {
+    try {
+      const response = await fetchApi('/scams');
+      if (response.$ok) {
+        setScams(response.data.scams || []);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -386,7 +407,7 @@ export default function ChatsPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-140px)] flex bg-white/40 backdrop-blur-xl rounded-[3rem] border border-white overflow-hidden shadow-2xl shadow-primary-900/5 animate-fade-in">
+    <div className="h-full flex bg-white/40 backdrop-blur-xl rounded-[3rem] border border-white overflow-hidden shadow-2xl shadow-primary-900/5 animate-fade-in">
       
       {/* Sidebar - Chat List */}
       <div className={`w-full md:w-[380px] flex flex-col border-r border-slate-100 ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
@@ -637,6 +658,7 @@ export default function ChatsPage() {
                {mounted && (
                  <SafetyMap 
                    hubs={hubs} 
+                   scams={scams}
                    onJoin={joinHub} 
                    onCreateHub={(name, coords) => {
                      // Intercept the click to show our custom modal

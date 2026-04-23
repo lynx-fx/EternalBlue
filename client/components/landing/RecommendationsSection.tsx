@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Star, ChevronRight, ArrowUpRight } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 
@@ -74,9 +75,11 @@ export default function RecommendationsSection() {
                  <div className="space-y-1.5 flex-1 pr-4">
                    <p className="text-[9px] text-slate-500 leading-relaxed font-medium line-clamp-2 italic">{rec.description}</p>
                  </div>
-                 <button className="bg-primary-600 text-white text-[11px] px-5 py-2.5 rounded-full font-medium hover:bg-primary-700 transition-colors border border-primary-600 shrink-0">
-                   Explore
-                 </button>
+                 <Link href="/dashboard">
+                   <button className="bg-primary-600 text-white text-[11px] px-5 py-2.5 rounded-full font-medium hover:bg-primary-700 transition-colors border border-primary-600 shrink-0">
+                     Explore
+                   </button>
+                 </Link>
               </div>
             </div>
           </div>
@@ -93,7 +96,7 @@ export default function RecommendationsSection() {
         <div className="flex flex-col sm:flex-row lg:flex-col gap-4 h-full">
            <div className="h-48 md:h-1/2 w-full relative rounded-3xl overflow-hidden bg-white shadow-sm border border-slate-100 p-2 pb-0 group cursor-pointer">
               <div className="w-full h-[65%] relative rounded-2xl overflow-hidden mb-3">
-                <Image src="https://images.unsplash.com/photo-1695653422055-1262d00c3bcf?q=80&w=2072&auto=format&fit=crop" alt="Guide Experience" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                <Image src="https://plus.unsplash.com/premium_photo-1677002240252-af3f88114efc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dHJla2tpbmd8ZW58MHx8MHx8fDA%3D" alt="Guide Experience" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/40 group-hover:bg-white group-hover:text-slate-900 transition-colors">
                    <ArrowUpRight size={16} />
                 </div>

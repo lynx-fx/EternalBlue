@@ -1,12 +1,14 @@
+import Cookies from 'js-cookie';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const token = Cookies.get('auth');
 
   const isFormData = options.body instanceof FormData;
   const headers: any = {
     ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
-    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(token && { auth: token }),
     ...options.headers,
   };
 

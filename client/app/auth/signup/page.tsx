@@ -7,6 +7,7 @@ import { Mail, Lock, ArrowRight, Loader2, Globe, Eye, EyeOff } from 'lucide-reac
 import { fetchApi } from '@/lib/api';
 import { toast } from 'sonner';
 import { useGoogleLogin } from '@react-oauth/google';
+import Cookies from 'js-cookie';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -34,7 +35,7 @@ export default function SignupPage() {
         return;
       }
 
-      localStorage.setItem('token', res.data.token);
+      Cookies.set('auth', res.data.token, { expires: 30 });
       toast.success(res.data.message || 'Access granted. Welcome to Voyage');
       router.push('/dashboard');
     } catch (error: any) {
