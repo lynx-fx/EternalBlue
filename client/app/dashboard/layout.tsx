@@ -18,6 +18,7 @@ import {
   Users
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
+import Cookies from 'js-cookie';
 
 export default function DashboardLayout({
   children,
@@ -47,7 +48,7 @@ export default function DashboardLayout({
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    Cookies.remove('auth');
     router.push('/auth/login');
   };
 

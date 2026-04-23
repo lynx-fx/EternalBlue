@@ -7,6 +7,7 @@ import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 import { toast } from 'sonner';
 import { useGoogleLogin } from '@react-oauth/google';
+import Cookies from 'js-cookie';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -29,7 +30,7 @@ export default function LoginPage() {
         return;
       }
 
-      localStorage.setItem('token', res.data.token);
+      Cookies.set('auth', res.data.token, { expires: 30 });
       toast.success(res.data.message || 'Access granted. Welcome Back.');
       
       const sessionRetriever = await fetchApi('/auth/get-me');
@@ -66,7 +67,7 @@ export default function LoginPage() {
         return;
       }
 
-      localStorage.setItem('token', response.data.token);
+      Cookies.set('auth', response.data.token, { expires: 30 });
       toast.success('Access granted. Welcome Back.');
 
       const sessionRetriever = await fetchApi('/auth/get-me');
