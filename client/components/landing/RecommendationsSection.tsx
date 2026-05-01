@@ -30,7 +30,7 @@ export default function RecommendationsSection() {
   const displayItems = recommendations.length > 0 ? recommendations.slice(0, 3) : [];
 
   return (
-    <section className="mb-24 pt-6">
+    <section id="recommendations" className="mb-24 pt-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-5 md:gap-8 mb-10 md:mb-12">
         <h2 className="text-3xl md:text-[2.5rem] font-medium leading-[1.05] tracking-tight max-w-[400px] text-[#161616]">
           Explore Our Travel Recommendations

@@ -4,6 +4,18 @@ import { Search, Send, User, ChevronRight, Star, Plane, Train, Bus, Car, ArrowUp
 import RecommendationsSection from "@/components/landing/RecommendationsSection";
 
 export default function Home() {
+  const today = new Date();
+  const checkout = new Date(today);
+  checkout.setDate(today.getDate() + 4);
+
+  const formatDate = (date: Date) => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  const checkInDate = formatDate(today);
+  const checkOutDate = formatDate(checkout);
+
   return (
     <div className="min-h-screen bg-[#F7F7F7] text-slate-900 font-sans pb-10 selection:bg-primary-600 selection:text-white">
       {/* Fixed Navigation */}
@@ -12,10 +24,9 @@ export default function Home() {
           <div className="font-semibold text-2xl tracking-tighter text-primary-600">Voyage</div>
           
           <div className="hidden lg:flex items-center gap-10 bg-white px-8 py-3.5 rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] text-sm font-medium border border-slate-100/50">
-            <Link href="#" className="text-slate-900">Discover</Link>
-            <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">Group Chats</Link>
-            <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">AI Itineraries</Link>
-            <Link href="#" className="text-slate-500 hover:text-slate-900 transition-colors">Alerts</Link>
+            <Link href="#discover" className="text-slate-900">Discover</Link>
+            <Link href="#recommendations" className="text-slate-500 hover:text-slate-900 transition-colors">Recommendations</Link>
+            <Link href="#community" className="text-slate-500 hover:text-slate-900 transition-colors">Community</Link>
           </div>
 
           <div className="flex items-center gap-3">
@@ -31,7 +42,7 @@ export default function Home() {
 
       <main className="max-w-[1400px] mx-auto px-6 md:px-10 pt-24 md:pt-32">
         {/* Hero Section */}
-        <section className="mb-20 md:mb-28">
+        <section id="discover" className="mb-20 md:mb-28">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-10 mb-10">
             <h1 className="text-5xl sm:text-6xl md:text-[5.5rem] font-medium leading-[0.95] tracking-tight text-[#161616]">
               Sync Your <br /> Travel Squad
@@ -53,7 +64,7 @@ export default function Home() {
                 src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop" 
                 alt="Mountains landscape" 
                 fill 
-                className="object-cover hover:scale-105 transition-transform duration-[10s]" 
+                className="object-cover hover:scale-105 transition-transform duration-[10s]"
                 priority
               />
             </div>
@@ -67,21 +78,24 @@ export default function Home() {
                 </div>
                 <div className="px-4 md:px-8 py-2 md:py-0 w-1/2 md:w-auto md:flex-1 border-l md:border-l-0">
                   <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5 md:mb-1">Check In</p>
-                  <p className="text-[12px] md:text-sm font-semibold text-slate-800 truncate">27 Jan 2025</p>
+                  <p className="text-[12px] md:text-sm font-semibold text-slate-800 truncate">{checkInDate}</p>
                 </div>
                 <div className="px-4 md:px-8 py-2 md:py-0 w-1/2 md:w-auto md:flex-1 border-t md:border-t-0">
                   <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5 md:mb-1">Check Out</p>
-                  <p className="text-[12px] md:text-sm font-semibold text-slate-800 truncate">30 Jan 2025</p>
+                  <p className="text-[12px] md:text-sm font-semibold text-slate-800 truncate">{checkOutDate}</p>
                 </div>
                 <div className="px-4 md:px-8 py-2 md:py-0 w-1/2 md:w-auto md:flex-1 border-t md:border-t-0 border-l md:border-l-0">
                   <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5 md:mb-1">People</p>
                   <p className="text-[12px] md:text-sm font-semibold text-slate-800 truncate">4 People</p>
                 </div>
               </div>
+              <Link href="/dashboard">
+              
               <button className="w-full md:w-16 h-12 md:h-16 bg-primary-600 rounded-xl md:rounded-full flex items-center justify-center text-white hover:bg-primary-700 transition-colors shrink-0 shadow-lg shadow-primary-900/30">
                 <Search size={22} strokeWidth={2.5} className="mr-2 md:mr-0" />
                 <span className="md:hidden font-medium">Search Places</span>
               </button>
+              </Link>
             </div>
           </div>
         </section>
@@ -92,7 +106,7 @@ export default function Home() {
         <RecommendationsSection />
 
         {/* Collaborative Group Travel Section */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-20 bg-white rounded-[2.5rem] md:rounded-[3rem] p-5 md:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.03)] border border-slate-100/50">
+        <section id="community" className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-20 bg-white rounded-[2.5rem] md:rounded-[3rem] p-5 md:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.03)] border border-slate-100/50">
           
           {/* Visual Side */}
           <div className="relative w-full min-h-[350px] md:min-h-[500px] bg-slate-200 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden flex items-center justify-center group pointer-events-none">
