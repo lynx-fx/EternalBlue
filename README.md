@@ -1,4 +1,4 @@
-# VoyageAI 🏔️
+# Voyage 🏔️
 
 **VoyageAI** is a high-fidelity, tactical travel intelligence platform specifically engineered for the Himalayan region. It integrates a state-of-the-art AI advisory command center, real-time geolocated social networking, and a proactive security intelligence matrix to ensure that modern voyagers can navigate the "Divine Terrain" with unparalleled safety and coordination.
 
